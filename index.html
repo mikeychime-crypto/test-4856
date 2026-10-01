@@ -1,0 +1,2149 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<title>The Void Between</title>
+<meta content="The Void Between — a dark-fantasy web novel following Lyra, an elf mage whose power bends gravity, in a world split in six around a void." name="description"/>
+<meta content="#07060d" name="theme-color"/>
+<link href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%2307060d'/%3E%3Cpath d='M25 7a13.5 13.5 0 100 26 10.8 10.8 0 010-26z' fill='%23c4a1f0'/%3E%3C/svg%3E" rel="icon"/>
+
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&amp;family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&amp;family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&amp;family=Inter:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+
+/* ==========================================================================
+   THE VOID BETWEEN — stylesheet
+   Tokens → base → chrome (header, rail) → reader → gates → dialogs → comments
+   → new components (progress, chapter nav, back-to-top) → a11y / print
+   ========================================================================== */
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  /* parchment (light) */
+  --bg:#efe6d2; --bg-alt:#e4d7b9; --panel:#f8f1e1; --text:#271d14; --muted:#6a5b45;
+  --accent:#6a2f57; --accent2:#276a5d; --border:#d0bf9a; --shadow:rgba(43,32,22,.14);
+  --glow:rgba(106,47,87,.11); --star:transparent;
+  --font-display:'Cinzel',Georgia,serif;
+  --font-head:'Cormorant Garamond',Georgia,serif;
+  --font-body:'Crimson Pro',Georgia,'Times New Roman',serif;
+  --font-ui:'Inter',-apple-system,'Segoe UI',sans-serif;
+  --radius:12px;
+  --ease:cubic-bezier(.22,.8,.3,1);
+}
+html{scroll-padding-top:calc(86px + env(safe-area-inset-top,0px)); font-size:100%; -webkit-text-size-adjust:100%;}
+html[data-fs="1"]{font-size:111%;}
+html[data-fs="2"]{font-size:122%;}
+html[data-fs="3"]{font-size:133%;}
+*{box-sizing:border-box;}
+/* moonlit (dark) */
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#07060d; --bg-alt:#100d1c; --panel:#121020; --text:#ebe5f5; --muted:#a198b9;
+    --accent:#c4a1f0; --accent2:#66d3cb; --border:#2a2540; --shadow:rgba(0,0,0,.55);
+    --glow:rgba(196,161,240,.14); --star:rgba(235,229,245,.55);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#07060d; --bg-alt:#100d1c; --panel:#121020; --text:#ebe5f5; --muted:#a198b9;
+  --accent:#c4a1f0; --accent2:#66d3cb; --border:#2a2540; --shadow:rgba(0,0,0,.55);
+  --glow:rgba(196,161,240,.14); --star:rgba(235,229,245,.55);
+}
+
+/* ---------- base ---------- */
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:var(--font-body);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  transition:background .3s,color .3s;
+}
+/* A faint moon-glow and (in dark mode) a scatter of stars sit behind everything. */
+body::before{
+  content:''; position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:
+    radial-gradient(1100px 560px at 88% -10%, var(--glow), transparent 62%),
+    radial-gradient(900px 520px at 4% 108%, color-mix(in srgb,var(--accent2) 9%,transparent), transparent 62%),
+    radial-gradient(1px 1px at 12% 22%, var(--star), transparent 100%),
+    radial-gradient(1px 1px at 63% 71%, var(--star), transparent 100%),
+    radial-gradient(1.4px 1.4px at 38% 48%, var(--star), transparent 100%),
+    radial-gradient(1px 1px at 84% 14%, var(--star), transparent 100%);
+  background-size:auto,auto,430px 430px,570px 570px,710px 710px,350px 350px;
+}
+::selection{background:color-mix(in srgb,var(--accent) 32%,transparent);}
+html{scrollbar-color:var(--border) transparent;}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px;}
+.skip-link{position:fixed; left:12px; top:-60px; z-index:100; padding:9px 16px; border-radius:999px; background:var(--accent); color:var(--panel); font-family:var(--font-ui); font-size:.85rem; text-decoration:none; transition:top .2s;}
+.skip-link:focus{top:calc(10px + env(safe-area-inset-top,0px));}
+
+/* ---------- header ---------- */
+header{
+  position:sticky; top:0; z-index:20;
+  padding:calc(12px + env(safe-area-inset-top,0px)) clamp(14px,3vw,30px) 12px;
+  background:color-mix(in srgb,var(--bg-alt) 86%,transparent);
+  -webkit-backdrop-filter:blur(14px) saturate(1.2); backdrop-filter:blur(14px) saturate(1.2);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;
+}
+.brand{display:flex; align-items:center; gap:13px;}
+.brand svg{flex:none; filter:drop-shadow(0 0 9px var(--glow));}
+.brand h1{font-family:var(--font-display); font-size:clamp(1rem,3.4vw,1.3rem); margin:0; letter-spacing:.16em; font-weight:600; line-height:1.15;}
+.brand span{display:block; font-family:var(--font-body); font-size:.8rem; color:var(--muted); letter-spacing:.1em; font-style:italic; margin-top:2px;}
+nav{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+.fs-group{display:flex; border:1px solid var(--border); border-radius:999px; overflow:hidden;}
+.fs-group button{border:none; border-radius:0; padding:7px 12px;}
+.fs-group button:first-child{border-right:1px solid var(--border);}
+
+/* ---------- buttons ---------- */
+button, .btn{
+  font-family:var(--font-ui); background:transparent; border:1px solid var(--border); color:var(--text);
+  padding:7px 14px; border-radius:999px; cursor:pointer; font-size:.85rem; font-weight:500; letter-spacing:.01em; line-height:1.3;
+  transition:border-color .2s,color .2s,background .2s,box-shadow .2s;
+}
+button:disabled{opacity:.35; cursor:default;}
+button:disabled:hover{border-color:var(--border); color:var(--text);}
+button:hover,.btn:hover{border-color:var(--accent); color:var(--accent);}
+.btn-solid{background:var(--accent); color:var(--panel); border-color:var(--accent);}
+.btn-solid:hover{background:var(--accent); color:var(--panel); border-color:var(--accent); box-shadow:0 4px 18px color-mix(in srgb,var(--accent) 40%,transparent);}
+#userArea button:hover{color:var(--accent); border-color:var(--accent);}
+#userArea .btn-solid:hover{color:var(--panel); background:var(--accent); border-color:var(--accent);}
+
+/* ---------- layout ---------- */
+main{max-width:1120px; margin:0 auto; padding:clamp(20px,4vw,40px) clamp(14px,3vw,28px) 90px; display:grid; grid-template-columns:250px minmax(0,1fr); gap:clamp(24px,4vw,48px); align-items:start;}
+@media(max-width:640px){
+  main{grid-template-columns:minmax(0,1fr); padding:16px 14px 60px; gap:16px;}
+}
+@media(min-width:641px){
+  .comments{grid-column:2;}
+}
+@media(max-width:380px){
+  .brand span{display:none;}
+}
+
+/* ---------- chapter rail ---------- */
+.toc summary{font-family:var(--font-ui); font-size:.72rem; font-weight:600; letter-spacing:.15em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; cursor:pointer; list-style:none;}
+.toc summary::-webkit-details-marker{display:none;}
+.toc summary::after{content:' ▾';}
+.toc details[open] summary::after{content:' ▴';}
+.toc ul{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:1px; border-left:1px solid var(--border);}
+.toc li a{color:var(--text); text-decoration:none; font-size:1.02rem; line-height:1.3; display:block; padding:7px 10px 7px 14px; margin-left:-1px; border-left:2px solid transparent; border-radius:0 8px 8px 0; transition:background .2s,color .2s,border-color .2s;}
+.toc li a:hover{background:var(--bg-alt);}
+.toc li a.active{color:var(--accent); font-weight:600; border-left-color:var(--accent); background:color-mix(in srgb,var(--accent) 9%,transparent);}
+.toc li a.owner-locked-link{color:var(--muted);}
+.toc li a.owner-locked-link::after{content:"  🔒"; font-size:.8em;}
+.toc li a.interlude{font-style:italic; font-size:.92rem; color:var(--muted); padding-left:26px;}
+.toc li a.interlude.active{color:var(--accent);}
+.toc li a.interlude::before{content:'✦ '; color:var(--accent2);}
+.toc li.locked{color:var(--muted); font-style:italic; font-size:.85rem; padding:7px 10px 7px 14px; opacity:.75;}
+@media(min-width:641px){
+  .toc{position:sticky; top:calc(92px + env(safe-area-inset-top,0px)); max-height:calc(100vh - 120px); overflow-y:auto; padding-right:6px; scrollbar-width:thin;}
+}
+@media(max-width:640px){
+  .toc details{border:1px solid var(--border); border-radius:var(--radius); background:var(--panel); padding:13px 16px; box-shadow:0 4px 18px var(--shadow);}
+  .toc details:not([open]) summary{margin-bottom:0;}
+}
+
+/* ---------- reader ---------- */
+#reader{
+  scroll-margin-top:calc(86px + env(safe-area-inset-top,0px));
+  background:var(--panel); border:1px solid var(--border); border-radius:var(--radius);
+  padding:clamp(22px,5vw,52px);
+  box-shadow:0 1px 0 color-mix(in srgb,var(--panel) 60%,#fff) inset, 0 18px 50px var(--shadow);
+  max-width:100%; overflow-x:auto;
+}
+#reader h2{font-family:var(--font-head); font-size:clamp(1.9rem,5.2vw,2.8rem); line-height:1.08; margin:6px 0 12px; color:var(--accent); font-weight:700; letter-spacing:-.005em; text-wrap:balance;}
+#reader .kicker{font-family:var(--font-ui); color:var(--accent2); letter-spacing:.2em; text-transform:uppercase; font-size:.72rem; font-weight:600; display:flex; align-items:center; gap:12px; margin:0 0 6px; text-indent:0;}
+#reader .kicker::after{content:''; flex:1; height:1px; background:var(--border);}
+#reader .voice{display:block; font-family:var(--font-head); font-style:italic; color:var(--muted); font-size:1.12rem; margin:0 0 clamp(26px,4vw,38px);}
+#reader .voice::after{content:''; display:block; width:54px; height:1px; margin-top:18px; background:var(--accent); opacity:.55;}
+#reader p{line-height:1.78; font-size:clamp(1.06rem,1rem + .35vw,1.2rem); color:var(--text); margin:0 0 1.15em; text-wrap:pretty; hyphens:auto; -webkit-hyphens:auto;}
+#reader .chapter > p.lead + p ~ p{margin-bottom:1.15em;}
+#reader .chapter{max-width:70ch; margin-inline:auto;}
+.chapter{display:none;} .chapter.active{display:block; animation:chapterIn .5s var(--ease) both;}
+@keyframes chapterIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
+/* end-of-chapter marks (their inline styles are overridden on purpose) */
+#reader p[style*="text-align:right"]{text-align:center !important; font-family:var(--font-head); font-size:1.02rem !important; letter-spacing:.06em; margin:clamp(30px,5vw,48px) 0 4px !important; color:var(--muted) !important;}
+#reader p[style*="text-align:right"]::before{content:'✦'; display:block; margin-bottom:10px; color:var(--accent2); font-style:normal; font-size:.95rem;}
+.lead::first-letter{font-family:var(--font-head); font-weight:700; font-size:3.7em; float:left; line-height:.8; padding:.07em .11em 0 0; color:var(--accent);}
+
+/* ---------- locked chapters (behaviour unchanged) ---------- */
+.paid-locked-chapter{position:relative;}
+.paid-locked-chapter.paid-hidden > *:not(.paid-gate){display:none !important;}
+.paid-gate{
+  margin:40px auto; padding:34px 28px; max-width:620px; text-align:center;
+  border:1px solid var(--border); border-radius:16px; background:var(--panel);
+  box-shadow:0 18px 50px rgba(0,0,0,.18);
+}
+.paid-gate .paid-lock-icon{font-size:2.2rem; margin-bottom:10px;}
+.paid-gate h3{font-family:var(--font-head); color:var(--accent); font-size:1.55rem; margin:0 0 10px;}
+.paid-gate p{color:var(--muted); line-height:1.7; margin:8px auto; max-width:520px;}
+.paid-gate .paid-price{font-family:var(--font-head); font-size:1.25rem; margin:18px 0; color:var(--text);}
+.paid-gate button{margin-top:8px;}
+.paid-chapter{position:relative;}
+
+/* Owner-only chapters: the reader UI stays locked until the authenticated
+   Supabase user has app_metadata.role = "owner". */
+.owner-locked > *:not(.owner-gate){display:none !important;}
+.owner-locked .owner-gate{display:block !important;}
+body.owner-authenticated .owner-locked > *{display:block !important;}
+body.owner-authenticated .owner-locked .owner-gate{display:none !important;}
+.owner-gate{
+  margin:40px auto; padding:36px 28px; max-width:620px; text-align:center;
+  border:1px solid var(--border); border-radius:16px;
+  background:color-mix(in srgb,var(--bg-alt) 55%,var(--panel));
+  box-shadow:0 18px 50px rgba(0,0,0,.18);
+}
+.owner-gate .owner-lock-icon{font-size:2.2rem; margin-bottom:10px;}
+.owner-gate h3{font-family:var(--font-head); color:var(--accent); font-size:1.7rem; margin:0 0 10px;}
+.owner-gate p{color:var(--muted); line-height:1.7; margin:8px auto; max-width:520px; font-size:1.05rem;}
+.owner-gate button{margin-top:10px;}
+
+/* ---------- dialogs ---------- */
+dialog{
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:0;
+  background:var(--panel);
+  color:var(--text);
+  width:min(92vw,430px);
+  max-width:430px;
+  box-shadow:0 30px 80px rgba(0,0,0,.4);
+  overflow:hidden;
+}
+dialog[open]{animation:dialogIn .28s var(--ease);}
+@keyframes dialogIn{from{opacity:0; transform:translateY(14px) scale(.98);} to{opacity:1; transform:none;}}
+dialog::backdrop{background:rgba(5,4,10,.66); -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px);}
+dialog form{padding:32px; border-top:3px solid var(--accent);}
+dialog h3{font-family:var(--font-head); font-size:1.7rem; letter-spacing:.01em; margin:0 0 8px !important; color:var(--accent); text-align:center;}
+.dialog-crest{display:block; width:42px; height:42px; margin:0 auto 12px; filter:drop-shadow(0 0 10px var(--glow)); animation:moonBreath 7s ease-in-out infinite;}
+dialog form > label{display:block; font-family:var(--font-ui); font-size:.78rem; font-weight:600; color:var(--muted); letter-spacing:.04em; margin:18px 0 7px;}
+dialog input{
+  width:100%;
+  min-height:46px;
+  padding:11px 14px;
+  margin:0;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:var(--bg);
+  color:var(--text);
+  font-family:inherit;
+  font-size:1rem;
+  box-sizing:border-box;
+  outline:none;
+  transition:border-color .18s, box-shadow .18s, background .18s;
+}
+dialog input:focus{border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);}
+dialog input::placeholder{color:var(--muted); opacity:.72;}
+dialog .signin-hint{min-height:1.25em; font-family:var(--font-ui); font-size:.82rem; color:#a33; margin:12px 0 2px; line-height:1.5;}
+dialog .signin-hint:empty{min-height:0; margin:0;}
+#signInDialog > form > div:last-of-type, #resetPasswordDialog > form > div, #newPasswordDialog > form > div{margin-top:22px !important; padding-top:4px;}
+#signInDialog button, #resetPasswordDialog button, #newPasswordDialog button{min-height:40px; padding:9px 16px; border-radius:10px; font-family:var(--font-ui); cursor:pointer;}
+#signInDialog button[type="button"], #resetPasswordDialog button[type="button"]{background:transparent; border:1px solid var(--border); color:var(--text);}
+#signInDialog button[type="button"]:hover, #resetPasswordDialog button[type="button"]:hover{border-color:var(--accent); color:var(--accent);}
+#accountSwitchText{color:var(--muted);}
+#switchToLogin, #forgotPassword{color:var(--accent);}
+#switchToLogin:hover, #forgotPassword:hover{opacity:.78;}
+#forgotPasswordWrap{margin-top:12px !important;}
+@media(max-width:480px){dialog form{padding:26px 20px;} dialog h3{font-size:1.45rem;}}
+
+/* ---------- footer ---------- */
+footer{text-align:center; color:var(--muted); font-size:.88rem; font-style:italic; padding:28px 20px calc(28px + env(safe-area-inset-bottom,0px)); border-top:1px solid var(--border);}
+
+/* ---------- shared reader comments ---------- */
+.comments{
+  margin-top:34px;
+  padding:clamp(20px,3.5vw,32px);
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:0 10px 34px var(--shadow);
+}
+.comments h3{
+  margin:0 0 6px;
+  color:var(--accent);
+  font-family:var(--font-head);
+  font-size:1.75rem;
+  font-weight:700;
+}
+.comments-subtitle{
+  margin:0 0 20px;
+  color:var(--muted);
+  font-size:1rem;
+}
+.comments-wave{position:relative; height:26px; overflow:hidden; margin:0 0 20px; border-radius:6px;}
+.comments-wave svg{position:absolute; top:0; left:0; height:100%; width:200%; display:block; animation:waveScroll 10s linear infinite;}
+@keyframes waveScroll{from{transform:translateX(0);} to{transform:translateX(-50%);}}
+@media(prefers-reduced-motion:reduce){.comments-wave svg{animation:none;}}
+.comment-form{
+  display:grid;
+  gap:10px;
+  margin-bottom:26px;
+}
+.comment-form textarea{
+  width:100%;
+  min-height:104px;
+  resize:vertical;
+  padding:13px 14px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:var(--bg);
+  color:var(--text);
+  font-family:inherit;
+  font-size:1rem;
+  line-height:1.55;
+  transition:border-color .18s, box-shadow .18s;
+}
+.comment-form textarea:focus{
+  outline:none;
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+.comment-form textarea:disabled{opacity:.6; cursor:not-allowed;}
+.comment-actions{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.comment-status{
+  color:var(--muted);
+  font-size:.85rem;
+  font-family:var(--font-ui);
+  transition:color .3s;
+}
+.comment-status.posted{color:var(--accent2); animation:statusPop .5s var(--ease);}
+@keyframes statusPop{0%{transform:scale(.92); opacity:.4;} 55%{transform:scale(1.05);} 100%{transform:scale(1); opacity:1;}}
+.comment-list{
+  display:grid;
+  gap:12px;
+}
+.comment{
+  padding:16px 18px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:var(--bg);
+  animation:commentIn .45s var(--ease) both;
+}
+@keyframes commentIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
+.comment-head{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:8px;
+}
+.comment-avatar{
+  flex:none; width:30px; height:30px; border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2)); color:var(--panel);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-ui); font-weight:600; font-size:.8rem;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 16%,transparent);
+}
+.comment-name{
+  color:var(--accent);
+  font-weight:400;
+  font-family:var(--font-ui);
+  font-size:.92rem;
+}
+.comment-date{
+  color:var(--muted);
+  font-size:.78rem;
+  font-family:var(--font-ui);
+  margin-left:auto;
+}
+.owner-badge{
+  font-family:var(--font-ui); font-size:.62rem; font-weight:600; letter-spacing:.06em;
+  background:var(--accent); color:var(--panel); padding:2px 7px; border-radius:10px;
+  vertical-align:middle; margin-left:4px;
+}
+.comment-delete,.comment-edit,.comment-save,.comment-cancel{
+  border:none; background:transparent; color:var(--muted); font-family:var(--font-ui);
+  font-size:.72rem; padding:3px 7px; cursor:pointer; border-radius:6px; letter-spacing:.02em;
+}
+.comment-delete:hover{ color:#a33; background:rgba(163,51,51,.1); }
+.comment-edit:hover,.comment-save:hover{ color:var(--accent); background:color-mix(in srgb,var(--accent) 10%,transparent); }
+.comment-cancel:hover{ color:var(--muted); background:color-mix(in srgb,var(--muted) 12%,transparent); }
+.comment-edit-box{
+  width:100%; min-height:90px; margin:8px 0; padding:10px;
+  border:1px solid var(--border); border-radius:8px; background:var(--bg); color:var(--text);
+  font:inherit; line-height:1.5; resize:vertical;
+}
+.comment-controls{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
+.comment-controls button{border:none;background:transparent;color:var(--muted);font-family:var(--font-ui);font-size:.72rem;padding:3px 7px;cursor:pointer;border-radius:6px}
+.comment-controls button:hover{color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.comment-controls .comment-delete:hover{color:#a33;background:rgba(163,51,51,.1)}
+.comment-replies{margin:10px 0 0 28px;padding-left:14px;border-left:1px solid var(--border);display:grid;gap:10px}
+.comment-reply{padding:13px 15px}
+.comment-edited{font-family:var(--font-ui);font-size:.68rem;color:var(--muted);font-style:italic;margin:-3px 0 6px}
+.reply-form-wrap{margin-top:8px}
+.reply-form{display:grid;gap:7px;padding:10px;border:1px solid var(--border);border-radius:9px;background:var(--panel)}
+.reply-form textarea{width:100%;min-height:70px;resize:vertical;padding:9px 11px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font:inherit}
+.reply-form div{display:flex;gap:7px;justify-content:flex-end}
+@media(max-width:640px){.comment-replies{margin-left:12px;padding-left:10px}}
+.comment-device{
+  margin:-4px 0 8px; font-family:var(--font-ui); font-size:.7rem; color:var(--accent2); font-style:italic;
+}
+.comment-text{
+  margin:0;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  line-height:1.6;
+  font-size:1.02rem;
+}
+.comment-empty{
+  color:var(--muted);
+  text-align:center;
+  padding:22px 8px;
+  font-style:italic;
+}
+@media(max-width:640px){
+  .comments{padding:20px 16px;}
+  .comment-head{flex-direction:column;gap:2px;}
+  .comment-head{align-items:flex-start;}
+  .comment-date{margin-left:0;}
+}
+.owner-comment{font-weight:800;}
+
+/* ---------- new: reading progress, chapter navigation, back-to-top ---------- */
+#readProgress{position:fixed; left:0; right:0; top:env(safe-area-inset-top,0px); height:3px; z-index:30; background:var(--accent); transform-origin:0 50%; transform:scaleX(0); pointer-events:none; opacity:.9;}
+.chapter-nav{display:grid; grid-template-columns:1fr auto 1fr; gap:14px; align-items:stretch; max-width:70ch; margin:clamp(30px,5vw,52px) auto 0; padding-top:26px; border-top:1px solid var(--border);}
+.chapter-nav button{display:flex; flex-direction:column; gap:3px; align-items:flex-start; text-align:left; border-radius:var(--radius); padding:13px 16px; max-width:100%; min-width:0;}
+.chapter-nav .cn-next{align-items:flex-end; text-align:right; justify-self:end;}
+.chapter-nav .cn-prev{justify-self:start;}
+.cn-dir{font-family:var(--font-ui); font-size:.72rem; color:var(--muted); letter-spacing:.04em;}
+.cn-title{font-family:var(--font-head); font-size:1.08rem; font-weight:600; line-height:1.25; color:var(--text); transition:color .2s; overflow-wrap:anywhere;}
+.chapter-nav button:hover:not(:disabled) .cn-title{color:var(--accent);}
+.cn-meta{align-self:center; text-align:center; font-family:var(--font-ui); font-size:.78rem; color:var(--muted); line-height:1.55;}
+.cn-meta b{display:block; font-weight:600; color:var(--text);}
+@media(max-width:640px){
+  .chapter-nav{grid-template-columns:1fr 1fr;}
+  .cn-meta{grid-column:1 / -1; order:-1;}
+}
+#toTop{position:fixed; right:max(16px,env(safe-area-inset-right,0px)); bottom:calc(18px + env(safe-area-inset-bottom,0px)); z-index:25; width:44px; height:44px; padding:0; border-radius:50%; font-size:1.1rem; background:var(--panel); box-shadow:0 8px 24px var(--shadow); opacity:0; transform:translateY(12px); pointer-events:none; transition:opacity .25s,transform .25s var(--ease),border-color .2s,color .2s;}
+#toTop.show{opacity:1; transform:none; pointer-events:auto;}
+
+/* ---------- accessibility & print ---------- */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important; transition:none !important; scroll-behavior:auto !important;}
+}
+@media print{
+  header,.toc,.comments,.chapter-nav,#toTop,#readProgress,footer,.skip-link{display:none !important;}
+  body::before{display:none;}
+  body{background:#fff; color:#000;}
+  main{display:block; padding:0;}
+  #reader{border:none; box-shadow:none; padding:0; background:none;}
+  #reader h2,.lead::first-letter{color:#000;}
+}
+
+/* ==========================================================================
+   Story dressing — moon, void, embers (everything here is decoration or
+   additive; nothing above is overridden except where noted)
+   ========================================================================== */
+:root{--accent3:#97571a; --rift:#6a2f57; --moon:#6a2f57; --water:#276a5d;}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent3:#e3a85c; --rift:#c4a1f0; --moon:#c4a1f0; --water:#66d3cb;}}
+:root[data-theme="dark"]{--accent3:#e3a85c; --rift:#c4a1f0; --moon:#c4a1f0; --water:#66d3cb;}
+#motes{position:fixed; inset:0; width:100%; height:100%; z-index:-1; pointer-events:none;}
+
+/* Each narrator gets their own colour: Lyra = moon, Kael = water, Wren = ember */
+.chapter[data-voice="kael"]{--accent:var(--water); --accent2:var(--moon);}
+.chapter[data-voice="wren"]{--accent:var(--accent3);}
+
+/* Reader panel: corner brackets like an old map's frame, plus a void-rift under each title */
+#reader{position:relative;}
+#reader::before,#reader::after{content:''; position:absolute; width:34px; height:34px; border:1px solid var(--accent); opacity:.45; pointer-events:none; transition:opacity .4s;}
+#reader::before{top:12px; left:12px; border-right:0; border-bottom:0; border-top-left-radius:8px;}
+#reader::after{bottom:12px; right:12px; border-left:0; border-top:0; border-bottom-right-radius:8px;}
+#reader .voice::after{height:8px; width:120px; background:var(--rift); opacity:.7; border:0; margin-top:16px;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 8'%3E%3Cpath d='M0 4h38l5-3 4 6 5-7 5 8 4-6 5 4h54' fill='none' stroke='%23000' stroke-width='1.2'/%3E%3C/svg%3E") no-repeat center/100% 100%;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 8'%3E%3Cpath d='M0 4h38l5-3 4 6 5-7 5 8 4-6 5 4h54' fill='none' stroke='%23000' stroke-width='1.2'/%3E%3C/svg%3E") no-repeat center/100% 100%;}
+.chapter.active h2{animation:titleIn 1.1s var(--ease) both;}
+.chapter.active .kicker{animation:fadeIn .8s var(--ease) both;}
+.chapter.active .voice{animation:fadeIn 1s .25s var(--ease) both;}
+.chapter.active .lead{animation:fadeIn 1.2s .45s var(--ease) both;}
+@keyframes titleIn{from{opacity:0; letter-spacing:.14em; filter:blur(7px);} to{opacity:1; letter-spacing:-.005em; filter:none;}}
+@keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+/* the drop cap glows faintly, like a lit moon */
+.lead::first-letter{text-shadow:0 0 22px color-mix(in srgb,var(--accent) 55%,transparent);}
+/* end-of-chapter ornament becomes a crescent */
+#reader p[style*="text-align:right"]::before{content:'☾'; font-size:1.5rem; color:var(--accent); text-shadow:0 0 16px color-mix(in srgb,var(--accent) 60%,transparent);}
+/* dialogue-friendly pull: first paragraph after the lead breathes a little */
+.toc li a.active::before{content:''; display:inline-block; width:6px; height:6px; margin:0 8px 1px -2px; border-radius:50%; background:var(--accent); box-shadow:0 0 10px var(--accent);}
+.brand svg{animation:moonBreath 7s ease-in-out infinite;}
+@keyframes moonBreath{50%{filter:drop-shadow(0 0 16px var(--glow)) brightness(1.15);}}
+
+/* Moon-phase progress button (replaces the plain arrow; same id, same job) */
+#toTop{width:50px; height:50px; padding:0; display:grid; place-items:center; background:var(--panel);}
+#toTop svg{width:34px; height:34px; display:block; overflow:visible;}
+#toTop .m-dark{fill:color-mix(in srgb,var(--muted) 24%,transparent);}
+#toTop .m-lit{fill:var(--accent); filter:drop-shadow(0 0 4px color-mix(in srgb,var(--accent) 70%,transparent));}
+#toTop .m-rim{fill:none; stroke:var(--border); stroke-width:1;}
+
+/* Resume toast */
+.resume-toast{position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom,0px)); z-index:40; transform:translate(-50%,20px); opacity:0; pointer-events:none; display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:center; max-width:min(92vw,520px); padding:12px 14px 12px 18px; border:1px solid var(--border); border-radius:999px; background:var(--panel); box-shadow:0 14px 40px var(--shadow); font-family:var(--font-ui); font-size:.85rem; transition:opacity .35s,transform .35s var(--ease);}
+.resume-toast.show{opacity:1; transform:translate(-50%,0); pointer-events:auto;}
+.resume-toast span{color:var(--muted);} .resume-toast b{color:var(--text); font-weight:600;}
+@media(max-width:640px){.resume-toast{border-radius:18px;}}
+@media(max-width:640px){#reader::before,#reader::after{display:none;}}
+@media print{#motes,.resume-toast{display:none !important;}}
+
+/* ---------- welcome overlay (shown once sign-in / sign-up completes) ---------- */
+.welcome-overlay{
+  position:fixed; inset:0; z-index:200; padding:20px;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(5,4,10,.72);
+  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  opacity:0; visibility:hidden; pointer-events:none;
+  transition:opacity .4s var(--ease), visibility 0s linear .4s;
+}
+.welcome-overlay.show{opacity:1; visibility:visible; pointer-events:auto; transition:opacity .4s var(--ease);}
+.welcome-card{
+  position:relative; width:min(92vw,460px); max-height:88vh; overflow-y:auto; overflow-x:hidden;
+  padding:46px 32px 34px; text-align:center;
+  background:var(--panel); border:1px solid var(--border); border-radius:20px;
+  box-shadow:0 40px 100px rgba(0,0,0,.5);
+  transform:translateY(18px) scale(.96); opacity:0;
+  transition:transform .5s var(--ease), opacity .5s var(--ease);
+}
+.welcome-overlay.show .welcome-card{transform:none; opacity:1;}
+.welcome-card::before{
+  content:''; position:absolute; inset:0; z-index:0;
+  background:radial-gradient(260px 180px at 50% -10%, var(--glow), transparent 70%);
+}
+.welcome-card > *{position:relative; z-index:1;}
+.welcome-spark{position:absolute; z-index:0; border-radius:50%; background:var(--accent2); opacity:0; animation:drift 4.5s ease-in-out infinite;}
+@keyframes drift{
+  0%{transform:translate(0,0); opacity:0;}
+  15%{opacity:.9;}
+  50%{transform:translate(var(--dx,10px),var(--dy,-16px)); opacity:1;}
+  85%{opacity:.4;}
+  100%{transform:translate(calc(var(--dx,10px)*1.7),calc(var(--dy,-16px)*2)); opacity:0;}
+}
+.welcome-elf{width:134px; height:134px; margin:0 auto 14px; display:block; filter:drop-shadow(0 0 16px var(--glow)); animation:welcomeIn .8s var(--ease) both, elfFloat 5s ease-in-out .9s infinite;}
+@keyframes welcomeIn{from{opacity:0; transform:scale(.6) translateY(10px);} to{opacity:1; transform:none;}}
+@keyframes elfFloat{0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);}}
+.welcome-moonmark{animation:moonPulse 2.6s ease-in-out infinite;}
+@keyframes moonPulse{0%,100%{opacity:1;} 50%{opacity:.55;}}
+/* background content blurs while the overlay holds the screen */
+body.reading-blurred > header, body.reading-blurred > main, body.reading-blurred > footer{
+  filter:blur(7px); transition:filter .45s var(--ease); pointer-events:none;
+}
+.welcome-kicker{margin:0 0 10px; font-family:var(--font-ui); font-size:.7rem; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:var(--accent2);}
+.welcome-title{margin:0 0 10px; font-family:var(--font-head); font-size:clamp(1.5rem,5vw,1.9rem); color:var(--accent); font-weight:700;}
+.welcome-sub{margin:0 0 28px; color:var(--muted); font-size:1rem; line-height:1.65;}
+.welcome-continue{min-width:170px;}
+@media(max-width:480px){.welcome-card{padding:34px 20px 24px;} .welcome-elf{width:102px; height:102px; margin-bottom:10px;}}
+@media(prefers-reduced-motion:reduce){.welcome-elf,.welcome-spark{animation:none;}}
+
+/* ==========================================================================
+   POLISH PASS — smoother motion, light-blue comment water, water orb,
+   elf welcome. Everything here is additive and loads last.
+   ========================================================================== */
+:root{--ease-soft:cubic-bezier(.16,1,.3,1); --aqua:#4fb8ee; --aqua-soft:#8fdcff;}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--aqua:#7fd6ff; --aqua-soft:#b6ecff;}}
+:root[data-theme="dark"]{--aqua:#7fd6ff; --aqua-soft:#b6ecff;}
+
+/* ---------- smoother everything ---------- */
+html{scroll-behavior:smooth;}
+body,header,.toc,#reader,.comments,footer,dialog{
+  transition-property:background-color,border-color,color,box-shadow;
+  transition-duration:.55s; transition-timing-function:var(--ease-soft);
+}
+button,.btn{
+  transition:border-color .3s var(--ease-soft),color .3s var(--ease-soft),background-color .3s var(--ease-soft),
+             box-shadow .35s var(--ease-soft),transform .3s var(--ease-soft);
+}
+button:not(:disabled):hover,.btn:hover{transform:translateY(-1px);}
+button:not(:disabled):active,.btn:active{transform:translateY(0) scale(.97); transition-duration:.12s;}
+.fs-group button:hover,.fs-group button:active{transform:none;}
+.toc li a{transition:color .3s var(--ease-soft),border-color .3s var(--ease-soft),background-color .3s var(--ease-soft),padding-left .4s var(--ease-soft);}
+.toc li a:hover{padding-left:19px;}
+#readProgress{transition:transform .25s linear;}
+.chapter.active{animation:chapterIn .75s var(--ease-soft) both;}
+@keyframes chapterIn{from{opacity:0; transform:translateY(16px); filter:blur(2px);} to{opacity:1; transform:none; filter:none;}}
+@keyframes fadeIn{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+dialog[open]{animation:dialogIn .55s var(--ease-soft) both;}
+@keyframes dialogIn{from{opacity:0; transform:translateY(24px) scale(.95); filter:blur(4px);} to{opacity:1; transform:none; filter:none;}}
+dialog[open]::backdrop{animation:backdropIn .5s var(--ease-soft) both;}
+@keyframes backdropIn{from{opacity:0;} to{opacity:1;}}
+dialog input,.comment-form textarea{transition:border-color .3s var(--ease-soft),box-shadow .35s var(--ease-soft),background-color .3s;}
+.resume-toast{transition:opacity .5s var(--ease-soft),transform .6s var(--ease-soft);}
+body > header, body > main, body > footer{transition:filter .7s var(--ease-soft), background-color .55s var(--ease-soft);}
+
+/* ---------- comments: light-blue flowing water ---------- */
+.comments{position:relative;}
+.comments::before{
+  content:''; position:absolute; left:0; right:0; top:0; height:3px; pointer-events:none;
+  border-radius:var(--radius) var(--radius) 0 0;
+  background:linear-gradient(90deg,transparent,var(--aqua-soft),var(--aqua),var(--aqua-soft),transparent);
+  background-size:200% 100%; animation:waterFlow 6s linear infinite; opacity:.9;
+}
+@keyframes waterFlow{from{background-position:0 0;} to{background-position:-200% 0;}}
+.comments-wave{
+  position:relative; height:46px; overflow:hidden; margin:0 0 22px; border-radius:12px;
+  background:linear-gradient(to bottom,transparent,color-mix(in srgb,var(--aqua) 12%,transparent));
+}
+.comments-wave svg{position:absolute; left:0; bottom:0; width:200%; height:100%; display:block; animation:waveScroll 13s linear infinite;}
+.comments-wave svg.w2{animation-duration:9s; animation-direction:reverse;}
+.comments-wave svg.w3{animation-duration:18s;}
+.comments-wave svg{will-change:transform;}
+.comments-wave::after{
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.4) 50%,transparent 70%);
+  background-size:220% 100%; animation:waterShine 7s ease-in-out infinite; opacity:.55;
+}
+@keyframes waterShine{0%{background-position:130% 0;} 100%{background-position:-130% 0;}}
+.comment{
+  animation:commentIn .75s var(--ease-soft) both;
+  transition:transform .4s var(--ease-soft),box-shadow .4s var(--ease-soft),border-color .4s var(--ease-soft),background-color .55s var(--ease-soft);
+}
+.comment.seen{animation:none;}
+.comment:hover{
+  transform:translateY(-2px);
+  border-color:color-mix(in srgb,var(--aqua) 55%,var(--border));
+  box-shadow:0 12px 30px color-mix(in srgb,var(--aqua) 20%,transparent);
+}
+@keyframes commentIn{from{opacity:0; transform:translateY(14px) scale(.985);} to{opacity:1; transform:none;}}
+.comment-form textarea:focus{
+  border-color:var(--aqua);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--aqua) 24%,transparent),0 0 26px color-mix(in srgb,var(--aqua) 20%,transparent);
+}
+.comment-status.posted{color:var(--aqua);}
+
+/* ---------- water orb (shown when a comment is posted) ---------- */
+.water-orb-wrap{
+  position:fixed; inset:0; z-index:400; pointer-events:none; overflow:hidden;
+  background:radial-gradient(circle at 50% 50%,rgba(14,44,86,.34),rgba(14,44,86,.14) 55%,transparent 85%);
+  animation:orbVeil 5.2s ease both;
+}
+@keyframes orbVeil{0%{opacity:0;} 12%{opacity:1;} 84%{opacity:1;} 100%{opacity:0;}}
+.water-orb{
+  --orb:clamp(130px,26vmin,210px);
+  position:absolute; left:50%; top:50%; width:var(--orb); height:var(--orb);
+  margin:calc(var(--orb) / -2) 0 0 calc(var(--orb) / -2);
+  animation:orbAppear 1s var(--ease-soft) both;
+}
+@keyframes orbAppear{0%{opacity:0; transform:scale(.15);} 55%{opacity:1; transform:scale(1.14);} 100%{opacity:1; transform:scale(1);}}
+.orb-halo{
+  position:absolute; inset:-65%; border-radius:50%;
+  background:radial-gradient(circle,rgba(140,220,255,.55),rgba(120,200,255,.18) 42%,transparent 66%);
+  animation:orbHalo 2.2s ease-in-out infinite;
+}
+@keyframes orbHalo{0%,100%{opacity:.7; transform:scale(.94);} 50%{opacity:1; transform:scale(1.1);}}
+.orb-body{
+  position:absolute; inset:0; overflow:hidden; will-change:transform,border-radius;
+  border-radius:50% 50% 50% 50% / 55% 55% 45% 45%;
+  background:
+    radial-gradient(circle at 70% 78%,rgba(200,245,255,.6),transparent 46%),
+    radial-gradient(circle at 50% 50%,rgba(175,230,255,.62),rgba(115,200,250,.82) 62%,rgba(80,172,240,.92) 100%);
+  box-shadow:
+    inset -10px -16px 32px rgba(255,255,255,.38),
+    inset 10px 12px 30px rgba(60,150,230,.38),
+    0 0 36px 8px rgba(140,215,255,.75),
+    0 0 100px 34px rgba(110,195,250,.42);
+  animation:orbMorph 2.7s ease-in-out infinite, orbBob 3.2s ease-in-out infinite, orbGlow 1.8s ease-in-out infinite;
+}
+@keyframes orbMorph{
+  0%,100%{border-radius:50% 50% 50% 50% / 55% 55% 45% 45%;}
+  25%{border-radius:57% 43% 48% 52% / 47% 58% 42% 53%;}
+  50%{border-radius:45% 55% 57% 43% / 58% 45% 55% 42%;}
+  75%{border-radius:52% 48% 43% 57% / 44% 55% 57% 45%;}
+}
+@keyframes orbBob{
+  0%,100%{transform:translateY(0) scale(1,1);}
+  30%{transform:translateY(-11px) scale(1.04,.96);}
+  62%{transform:translateY(5px) scale(.96,1.04);}
+}
+@keyframes orbGlow{0%,100%{filter:brightness(1) saturate(1);} 50%{filter:brightness(1.2) saturate(1.2);}}
+.orb-swirl{
+  position:absolute; inset:-30%; mix-blend-mode:screen; opacity:.85; filter:blur(10px);
+  background:conic-gradient(from 0deg,rgba(255,255,255,0) 0,rgba(255,255,255,.6) 12%,rgba(255,255,255,0) 28%,rgba(255,255,255,0) 50%,rgba(255,255,255,.45) 64%,rgba(255,255,255,0) 80%);
+  animation:orbSwirl 5s linear infinite;
+}
+@keyframes orbSwirl{to{transform:rotate(360deg);}}
+.orb-bubble{
+  position:absolute; bottom:-14%; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff,rgba(255,255,255,.16) 62%);
+  opacity:0; animation:orbRise 2.6s ease-in infinite;
+}
+@keyframes orbRise{
+  0%{transform:translateY(0) scale(.6); opacity:0;}
+  20%{opacity:.95;}
+  100%{transform:translateY(-190px) translateX(var(--bx,6px)) scale(1.1); opacity:0;}
+}
+.orb-shine{
+  position:absolute; left:19%; top:13%; width:32%; height:19%; border-radius:50%;
+  background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(255,255,255,0)); transform:rotate(-28deg);
+}
+.water-orb.swelling .orb-body{animation:orbMorph 2.7s ease-in-out infinite, orbSwell .5s ease-in forwards, orbGlow .35s ease-in-out infinite;}
+@keyframes orbSwell{
+  0%{transform:scale(1);} 20%{transform:scale(1.04) translateX(-3px);} 40%{transform:scale(1.08) translateX(3px);}
+  60%{transform:scale(1.11) translateX(-4px);} 80%{transform:scale(1.14) translateX(4px);} 100%{transform:scale(1.18);}
+}
+.water-orb.bursting{animation:orbBurst .34s cubic-bezier(.2,.9,.3,1) forwards;}
+@keyframes orbBurst{
+  0%{opacity:1; transform:scale(1);}
+  35%{opacity:1; transform:scale(1.3,1.18);}
+  100%{opacity:0; transform:scale(1.75); filter:blur(8px);}
+}
+.orb-ring{
+  position:absolute; left:50%; top:50%; width:var(--r,160px); height:var(--r,160px);
+  margin:calc(var(--r,160px) / -2) 0 0 calc(var(--r,160px) / -2); border-radius:50%;
+  border:3px solid rgba(170,230,255,.9); box-shadow:0 0 24px rgba(140,215,255,.8),inset 0 0 18px rgba(140,215,255,.5);
+  opacity:0; animation:orbRing 1s cubic-bezier(.15,.8,.3,1) var(--rd,0s) forwards;
+}
+@keyframes orbRing{0%{opacity:.95; transform:scale(.55);} 100%{opacity:0; transform:scale(3.6);}}
+.orb-flash{
+  position:absolute; left:50%; top:50%; width:340px; height:340px; margin:-170px 0 0 -170px; border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.95),rgba(170,230,255,.5) 40%,transparent 70%);
+  opacity:0; animation:orbFlash .55s ease-out forwards;
+}
+@keyframes orbFlash{0%{opacity:1; transform:scale(.3);} 100%{opacity:0; transform:scale(1.6);}}
+.orb-drop{
+  position:absolute; left:50%; top:50%; width:var(--s); height:var(--s); margin:calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+  border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+  background:radial-gradient(circle at 32% 28%,#fff 0 14%,rgba(190,240,255,.9) 36%,rgba(100,195,250,.9));
+  box-shadow:0 0 14px 3px rgba(140,215,255,.75);
+  opacity:0; animation:orbDrop var(--dur,1s) cubic-bezier(.2,.7,.4,1) var(--dl,0s) forwards;
+}
+@keyframes orbDrop{
+  0%{opacity:1; transform:translate(0,0) scale(1);}
+  55%{opacity:1; transform:translate(calc(var(--tx) * .82),calc(var(--ty) * .82)) scale(.85);}
+  100%{opacity:0; transform:translate(var(--tx),calc(var(--ty) + 90px)) scale(.3);}
+}
+
+/* ---------- elf welcome (login / sign-up) ---------- */
+.welcome-overlay{
+  background:radial-gradient(ellipse at 50% 38%,rgba(150,120,235,.26),rgba(5,4,10,.8) 72%);
+  -webkit-backdrop-filter:blur(12px) saturate(1.1); backdrop-filter:blur(12px) saturate(1.1);
+  transition:opacity .6s var(--ease-soft), visibility 0s linear .6s;
+}
+.welcome-overlay.show{transition:opacity .6s var(--ease-soft);}
+body.reading-blurred > header, body.reading-blurred > main, body.reading-blurred > footer{filter:blur(9px) brightness(.82);}
+.welcome-card{
+  z-index:1; padding:30px 32px 32px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--panel) 70%,transparent),color-mix(in srgb,var(--panel) 90%,transparent));
+  -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+  border-color:color-mix(in srgb,var(--accent2) 40%,var(--border));
+  box-shadow:0 40px 100px rgba(0,0,0,.5),0 0 70px color-mix(in srgb,var(--accent2) 20%,transparent);
+  transition:transform .85s var(--ease-soft), opacity .6s var(--ease-soft);
+}
+.welcome-elf{
+  width:178px; height:auto; margin:0 auto 10px;
+  filter:drop-shadow(0 0 18px rgba(190,170,255,.55)) drop-shadow(0 0 30px rgba(150,220,255,.35));
+  animation:welcomeIn 1s var(--ease-soft) both, elfFloat 5.5s ease-in-out 1s infinite;
+}
+.elf-hairback{transform-box:fill-box; transform-origin:50% 0; animation:hairSway 5s ease-in-out infinite;}
+@keyframes hairSway{0%,100%{transform:rotate(-.8deg);} 50%{transform:rotate(1deg) skewX(-.8deg);}}
+.elf-eyes{transform-box:fill-box; transform-origin:50% 55%; animation:elfBlink 5.5s ease-in-out infinite;}
+@keyframes elfBlink{0%,92%,100%{transform:scaleY(1);} 95.5%{transform:scaleY(.08);}}
+.elf-aura{animation:auraPulse 3.4s ease-in-out infinite; transform-box:fill-box; transform-origin:center;}
+@keyframes auraPulse{0%,100%{opacity:.75; transform:scale(.96);} 50%{opacity:1; transform:scale(1.06);}}
+.elf-twinkle{transform-box:fill-box; transform-origin:center; animation:elfTwinkle 2.6s ease-in-out infinite;}
+@keyframes elfTwinkle{0%,100%{opacity:.25; scale:.5;} 50%{opacity:1; scale:1.25;}}
+.welcome-sparkles{position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0;}
+.sparkle{
+  position:absolute; width:var(--s); height:var(--s); line-height:var(--s); font-size:var(--s); text-align:center;
+  color:var(--c); text-shadow:0 0 8px var(--c),0 0 18px var(--c); opacity:0;
+  animation:sparkleDrift var(--dur) ease-in-out var(--delay) infinite, sparkleTwinkle var(--tw) ease-in-out infinite;
+}
+.sparkle::before{content:'\2726';}
+.sparkle.dot{border-radius:50%; background:radial-gradient(circle,#fff,var(--c) 45%,transparent 72%); box-shadow:0 0 10px var(--c); text-shadow:none;}
+.sparkle.dot::before{content:none;}
+@keyframes sparkleDrift{
+  0%{transform:translate(0,0) rotate(0deg); opacity:0;}
+  12%{opacity:1;}
+  50%{transform:translate(calc(var(--dx) * .5),-38vh) rotate(90deg);}
+  88%{opacity:.9;}
+  100%{transform:translate(var(--dx),-82vh) rotate(180deg); opacity:0;}
+}
+@keyframes sparkleTwinkle{0%,100%{scale:.6;} 50%{scale:1.25;}}
+@media(max-width:480px){.welcome-card{padding:24px 20px 24px;} .welcome-elf{width:140px;}}
+@media(prefers-reduced-motion:reduce){.sparkle,.elf-hairback,.elf-eyes,.elf-aura,.elf-twinkle,.comments::before,.comments-wave::after{animation:none;}}
+@media print{.water-orb-wrap,.welcome-overlay{display:none !important;}}
+
+</style>
+</head>
+<body>
+<a class="skip-link" href="#reader">Skip to the story</a>
+<div aria-hidden="true" id="readProgress"></div>
+<header>
+<div class="brand">
+<svg aria-hidden="true" height="38" viewbox="0 0 40 40" width="38">
+<circle cx="20" cy="20" fill="none" r="17.5" stroke="var(--border)" stroke-width="1.4"></circle>
+<path d="M20 3a17 17 0 000 34" fill="none" opacity=".7" stroke="var(--accent2)" stroke-width="1.3"></path>
+<path d="M25 7a13.5 13.5 0 100 26 10.8 10.8 0 010-26z" fill="var(--accent)"></path>
+<path d="M6 24c3-3 6-3 9 0s6 3 9 0" fill="none" stroke="var(--accent2)" stroke-linecap="round" stroke-width="1.6"></path>
+<path d="M20 2v3M20 35v3M2 20h3M35 20h3" stroke="var(--border)" stroke-linecap="round" stroke-width="1"></path>
+</svg>
+<div><h1>THE VOID BETWEEN</h1><span>a world split in six</span></div>
+</div>
+<nav>
+<button aria-label="Toggle theme" id="themeBtn">🌘 Theme</button>
+<div class="fs-group">
+<button aria-label="Decrease text size" id="fsMinus" title="Smaller text">A−</button>
+<button aria-label="Increase text size" id="fsPlus" title="Larger text">A+</button>
+</div>
+<span id="userArea"><button class="btn-solid" id="openSignIn" onclick="document.getElementById('signInDialog')?.showModal()" type="button">Sign in</button></span>
+</nav>
+</header>
+<main>
+<div class="toc">
+<details id="tocDetails" open="">
+<summary>Chapters</summary>
+<ul id="tocList">
+<li><a class="active" data-ch="1" href="#">I. The Girl Who Bent the Dark</a></li>
+<li><a data-ch="2" href="#">II. Duskhaven Academy</a></li>
+<li><a data-ch="3" href="#">III. Lessons of Blood and Silver</a></li>
+<li><a class="interlude" data-ch="3b" href="#">What the Water Boy Carried</a></li>
+<li><a data-ch="4" href="#">IV. What the Water Boy Left</a></li>
+<li><a data-ch="5" href="#">V. The Long Quiet</a></li>
+<li><a data-ch="6" href="#">VI. The Auction at Kirrow</a></li>
+<li><a data-ch="7" href="#">VII. Two Ghosts, One House</a></li>
+<li><a data-ch="8" href="#">VIII. The Contract at Hollow Bridge</a></li>
+<li><a class="interlude" data-ch="8b" href="#">What the Wren Kept</a></li>
+<li><a data-ch="9" href="#">IX. Salt and Iron</a></li>
+<li><a data-ch="10" href="#">X. The Church's Long Shadow</a></li>
+<li><a data-ch="11" href="#">XI. A City That Remembers</a></li>
+<li><a data-ch="12" href="#">XII. The Informant</a></li>
+<li class="locked">XIII. Blood Debts — sealed</li>
+<li class="locked">XIV. The Name She Wouldn't Give — sealed</li>
+<li class="locked">XV. Cracks in the Veil — sealed</li>
+<li class="locked">XVI. Betrayal at Greywater — sealed</li>
+<li class="locked">XVII. The Accusation — sealed</li>
+<li class="locked">XVIII. Trial of Ash — sealed</li>
+<li class="locked">XIX. The Long Walk — sealed</li>
+<li class="locked">XX. The Cross at the Void's Edge — sealed</li>
+</ul>
+</details>
+</div>
+<article id="reader">
+<section class="chapter active" data-chapter="1">
+<p class="kicker">Chapter One</p>
+<h2>The Girl Who Bent the Dark</h2>
+<span class="voice">as remembered by Lyra</span>
+<p class="lead">Ashenmoor sat where the good light gave out — the last town before the land itself seemed to lose its nerve and go pale and empty, before six kingdoms curled protectively around a grey scar in the earth that no mapmaker would draw past. The old women called it the Void, and they did not look at it after dark, the way you don't look too long at a wound on someone else's body for fear of finding your own future in it. I grew up in its shadow the way another child grows up in the shadow of a mountain — an enormous, permanent fact of the landscape, present at every window, too large to really see. It never once felt to me like the Void was watching. That was the town's job, and Ashenmoor did it well.</p>
+<p>I was small even for an elf, and elves are not a tall people to begin with, and I had ears the local boys liked to grab and yank until the tips went white and I cried without meaning to. That day there were three of them — the miller's son and the smith's son and a cousin of one or the other, I never did sort out which — and they had backed me behind the chapel where the priests couldn't see, into a strip of yard where the frost hadn't melted since the first cold snap and the mud underneath had gone hard and grey as old bone.</p>
+<p>"Leaf-ears," the biggest one said. He always said it the same way, like it was a spell he was casting. "Cursed thing. My da says your kind brings the Void closer every year you keep breathing our air." He shoved me, and I went down hard onto the frozen ground, and something that had lived quietly in my chest my whole short life — coiled, patient, waiting for a reason — opened its eyes.</p>
+<p>I felt it before I understood it. The air around me thickened, the way a room thickens before a storm breaks over it, pressing down on everything at once. It wasn't dramatic. It didn't need to be. It was just enough that the boy standing over me staggered, as though the ground itself had tilted a few degrees for him alone, and his friends' laughter caught wet in their throats and died there. I only knew, lying in the mud with my ears ringing and my whole body gone strange and heavy, that the world bent a little when I was frightened enough, and that it always made everything worse afterward. Marked. Cursed. A mage-child born to the wrong parents in the wrong town, and towns like mine did not forgive a girl for being marked, whatever she had or hadn't done to deserve it.</p>
+<p>"She's doing it again," the smith's son hissed, already backing away. "Get the priest. Get—"</p>
+<p>He never finished, because that was the exact moment the water rose out of the horse trough behind them, silent as a held breath, and slapped all three boys full in the face like a hand out of nowhere.</p>
+<p>I looked up through my own wet lashes and found a boy standing on the low chapel wall with his palm still cupped toward the trough, watching three older boys splutter and swear below him with an expression of pure, uncomplicated delight. I knew his face, if not his name yet, from the chapel steps where I liked to sit and read when the weather allowed it. Kael — ten years old, human, with the kind of easy grin that made grown men nervous and made other children fall in behind him without ever quite deciding to. He looked like a boy who had been waiting his whole short life for a good enough reason to do exactly this.</p>
+<p>"Funny," he said, to no one and everyone, "how brave three of you get around one girl half your size. Want to try it on somebody your own age? I'm right here." He hopped down off the wall without a flicker of concern, water still dripping off his sleeve where his own magic had run backward through him too — an affinity that answered him just as strangely as mine answered me, though nobody in Ashenmoor had ever thought to burn a boy for calling water the way they thought to burn a girl for bending the ground.</p>
+<p>The miller's son spat mud and swore he'd tell his father. Kael told him to tell whoever he liked. The three of them went, dripping and furious and — I noticed, hiccupping through tears I hadn't let myself cry in front of them — a little afraid of him now too, though he'd never actually threatened a single one of them. He had simply decided, the way he seemed to decide most things, that the fight belonged to him, and somehow that alone had been enough to end it.</p>
+<p>He crouched into the frozen mud without any apparent concern for his own knees and looked at me properly for the first time in my life. "You're the girl from the chapel steps," he said. "The one who reads." I nodded, because I didn't trust my voice to do anything but shake. "You're shaking," he said — not unkindly, just as a fact — and shrugged out of his own coat and settled it around my shoulders like he'd done it a hundred times before, though we had never once spoken until that morning. "It's the Void, you know," he added, nodding past the tree line toward the grey nothing none of us were supposed to look at too long. "Makes people stupid and mean, living this close to it for so many years. My mother says it's like a bruise on the whole world, and everybody in Ashenmoor's been standing on the same bruise long enough to forget it hurts."</p>
+<p>"They say I'll make it worse," I managed. "That mages like me are the reason it keeps spreading."</p>
+<p>"They say a lot of things." He helped me up, unhurried, as if there were no possible version of that morning in which he had somewhere better to be. Past the square behind him stood the black iron frame the town kept for burnings, swept and empty and waiting the way it always was — a fixture as ordinary to Ashenmoor as the well, there to remind us all exactly what happened to the truly cursed, the ones the Church never claimed as its own. I had watched a woman die on that frame two winters before, and I had not slept right for the better part of a month afterward. Mages, at least — real ones, marked and catalogued and collared under the Church's strange, cold protection — did not end there. It was almost a comfort, in its way, knowing precisely which terrible fate was not yet mine to fear.</p>
+<p>Kael didn't look at the frame at all. He was watching my face instead, like it mattered more. "Come on," he said. "I know where the miller keeps his good apples, and after that you can show me what a leaf-ear does when nobody's trying to drown her for it."</p>
+<p>I laughed — a small, disbelieving, painful sound, like something long unused finding its hinges again after years of rust — and for the first time in longer than I could remember, the air around me didn't feel like it was waiting for a reason to fall.</p>
+<p style="text-align:right; color:var(--muted); font-style:italic; margin-top:30px;">— end of Chapter One —</p>
+</section>
+<section class="chapter" data-chapter="2">
+<p class="kicker">Chapter Two</p>
+<h2>Duskhaven Academy</h2>
+<span class="voice">as remembered by Lyra</span>
+<p class="lead">The Warden came to Ashenmoor once a year, the same way the tax collector came, or the traveling priest, except the whole town feared him for a different reason entirely. He rode in on a black gelding branded with the Church's sigil, lined the parish children in rows outside the chapel, and passed his open palm an inch above each small head, watching to see whose hair lifted, whose breath fogged in warm air, whose shadow bent the wrong way against the frost. I was eleven the year his hand stopped over mine and did not move on.</p>
+<p>"Lunar," he said, mostly to himself, writing it into a ledger bound in grey leather. "Rare, that. Girl'll need proper handling or she'll crack something important one day — herself, most likely." He looked at me the way the millers looked at good grain, weighing and pleased, and I understood, even at eleven, that I had just become someone's inventory. Then his palm passed over Kael's head and the candle two feet away guttered as if a window had opened somewhere it shouldn't have. The Warden's eyebrows rose. "Water, and strong. Both of you, then. Duskhaven will want you both."</p>
+<p>Our priest tried to argue that the boy wasn't marked the way the girl was, that surely one mage-child a year was tithe enough for a town our size. The Warden looked at him with the flat patience of a man who had had this same argument in forty other villages and won every time. "The Church protects what serves it," he said. "An untrained water-mage is a drowned barn waiting to happen. Would you rather explain that to the Bishop, or would you rather I take him somewhere he can be useful instead of dangerous?" Nobody in Ashenmoor argued with the Church twice.</p>
+<p>My grandmother didn't cry while she packed my things, though her hands shook the whole time she folded my one good dress, and she pressed her own shawl into my arms at the door as if wool could say what she couldn't. "Warm enough for the coast," was all she told me, and I understood, the way children understand things they aren't old enough to name yet, that this was the only goodbye she had left in her to give. Three weeks later Kael and I rode out of town in the back of a covered cart, that shawl still smelling of woodsmoke around my shoulders, and I did not look back at the black iron frame in the square as it shrank behind us. Some things are easier to leave if you don't watch them get smaller.</p>
+<p>Duskhaven Academy sat on a cliff above a grey, restless sea, four days' ride from anywhere I had ever been — a fortress of black stone the Church had built less to keep enemies out than to keep three hundred unpredictable children contained in one place at once. Magistra Voss met us at the gate: a stern, sharp-boned woman in her thirties with a permanent ink stain on her right hand and, as far as I could tell that whole first year, no patience whatsoever for crying, of which the new intake did a great deal that week. "You are not prisoners," she told us, pacing in front of the assembled first-years like she was inspecting livestock she hadn't yet decided to buy. "You are assets the Church has chosen not to burn. I would recommend gratitude, or at minimum, competence. Missions begin at fifteen. Until then, you will learn to control what you are, so that when you are finally useful, you do not kill your supervisor by accident." A boy near the back laughed, thinking it a joke. Magistra Voss did not smile, and neither, after a moment, did he.</p>
+<p>The dormitories were cold stone and thin blankets, and the rest of us sorted ourselves quickly into two kinds: the ones who'd grown up wealthy enough to resent being sent here, and the ones who, like me, found that three meals a day and a locked door against the world outside felt like more mercy than we'd expected to get from anyone. Kael adapted to Duskhaven the way he adapted to everything — cheerfully, immediately, charming the kitchen staff into extra bread within a week and finding his first fistfight within two, over nothing more than a boy who'd called me a leech on the Church's charity within my hearing. He came back to the dormitory with a split lip and no regrets at all. "Ashenmoor rules don't stop just because we left Ashenmoor," he told me, dabbing at his mouth with the back of his sleeve. "Somebody has to keep doing them."</p>
+<p>At night, once the other first-years were asleep, I practiced alone in the courtyard under the moon Magistra Voss had told us all to respect and fear in equal measure, feeling the ground answer me a little more each time, feeling myself grow strange and strong and slightly less afraid of my own hands. Kael usually came to watch, sitting on the cold steps with his knees pulled up, not saying much — just there, the same way he'd been there in the mud behind the chapel, proof, every single night, that being marked didn't have to mean being alone with it.</p>
+<p style="text-align:right; color:var(--muted); font-style:italic; margin-top:30px;">— end of Chapter Two —</p>
+</section>
+<section class="chapter" data-chapter="3">
+<p class="kicker">Chapter Three</p>
+<h2>Lessons of Blood and Silver</h2>
+<span class="voice">as remembered by Lyra</span>
+<p class="lead">By sixteen, I could drop a grown man to his knees from across a courtyard without touching him, and I'd learned, more slowly and at greater cost, when not to. Duskhaven taught control first and compassion second, if it taught compassion at all — Magistra Voss's favorite lesson was that a mage who hesitated was a mage who got her whole party killed, and she illustrated the point with a scar on her own forearm often enough that nobody doubted her.</p>
+<p>Our first real mission, the summer we turned sixteen, was meant to be simple: escort a merchant caravan past Greywater, where Void-sickness sometimes crept into the livestock and turned them wrong in the night. It was not simple. We arrived to find the town's square already occupied — a woman lashed to a post, kindling stacked to her knees, a crowd of ordinary, unremarkable townsfolk watching with the flat, hungry patience of people who had been told this was justice and had decided to believe it. "Void-touched," Magistra Voss said quietly, reading the charge nailed above the woman's head, and didn't let either of us look away. "Not a mage. No collar, no ledger entry, no Church claim on her. That is the only reason she is not on our ledger and safe on the coach. Remember the difference. It is the only thing standing between you and that post."</p>
+<p>I didn't sleep that night, and Kael found me on the roof of the coaching inn, knees against my chest, the way he always did. He didn't offer comfort so much as company, which by then I'd learned was the better gift. "I keep thinking," I said, "that it's luck. All of it. That I could've been born three villages that way and been her instead of me." "You weren't," Kael said. "You were born the exact amount of trouble you are, and I like you exactly that much trouble." I laughed despite myself, and when I looked at him in the dark I noticed, not for the first time but for the first time on purpose, the particular way he was looking back at me — like the mission and the fire and the whole cruel machinery of the Church had receded somewhere far away and there was only the two of us on a roof.</p>
+<p>Neither of us said anything more that night. Neither of us needed to. It became, over the following year, a fact as ordinary and load-bearing as the ground: Kael and I, the water-mage and the moon-marked girl, inseparable in the dormitory halls in the way that made the younger students roll their eyes and the older ones grow quietly protective, as if the two of us being happy was a fragile, communal thing worth guarding.</p>
+<p>Our missions grew harder as our control grew steadier — a haunting at Millbrook that turned out to be smugglers exploiting superstition, a Void-tainted wolf pack outside Corrin that took three days and cost another team's mage a hand, a riot in Ashford that the Church's presence made worse before it made better, though no one above Magistra Voss's rank seemed interested in that particular lesson. I learned to read a battlefield the way I'd once learned to read a room full of bullies: where the weight was, where it would move, where it could be made to fall. Kael learned to be the water in every fight that needed drowning and the water in every wound that needed cleaning, and between the two of us, our small three-person unit earned a reputation Magistra Voss pretended not to be proud of.</p>
+<p>It was in our last spring at Duskhaven, the week before graduation missions began in earnest, that Kael finally said it plainly, on the same roof, under a moon just short of full. "I love you," he said, like it was the least remarkable thing in the world, like he'd simply run out of reasons to keep it to himself. "I have for years. I just wanted you strong enough first that you'd believe I meant it and not think you needed saving to earn it." I didn't cry, though I came close. "I already knew," I told him. "I just liked hearing you be brave enough to say it out loud." We had, neither of us then knew, one mission left before the world decided that wasn't going to be allowed to last.</p>
+<p style="text-align:right; color:var(--muted); font-style:italic; margin-top:30px;">— end of Chapter Three —</p>
+</section>
+<section class="chapter" data-chapter="3b">
+<p class="kicker">Interlude</p>
+<h2>What the Water Boy Carried</h2>
+<span class="voice">as remembered by Kael</span>
+<p class="lead">I never told Lyra this, because there never seemed to be a right moment and then, all at once, there wasn't any moment left at all — but I had decided I loved her three years before I said so out loud on that roof, and I spent every one of those three years far more afraid of being wrong about it than I ever was of anything Duskhaven asked us to fight.</p>
+<p>Water doesn't choose where it goes. That's the first thing they teach a water-mage, right after they teach you not to drown your own classmates by accident: water finds the lowest point and fills whatever shape it's given, patient and shapeless, impossible to hold onto by force. I used to think that made me the opposite of Lyra, whose gravity pulled everything toward her whether it wanted to come or not, heavy and inevitable, a fixed point in a room. It took me years to understand I had it backward. I wasn't shapeless. I had simply already chosen my shape, the day I was ten years old and decided the fight behind that chapel belonged to me. I just hadn't told anyone, myself included, exactly what I'd chosen it for.</p>
+<p>My mother used to say I was born already knowing how to want things, which she meant as a complaint and I always took as a compliment. She stayed behind in Ashenmoor when the Warden took me — too old to be reassigned to a life near the coast, she said, and too stubborn besides — and I wrote to her every season whether or not I had anything worth telling. I never told her about Lyra directly. I think she knew anyway. Mothers generally do.</p>
+<p>I used to lie awake in the dormitory some nights, after the lamps went out, and build the whole rest of my life like a house with no walls yet, just a shape I liked the outline of: the two of us somewhere the sea wasn't grey, once our years of Church service finally ran out and nobody could tell either of us where to point our own magic anymore. I never said this plan out loud. It felt like the kind of thing that could only survive if you didn't test it against the actual world too early.</p>
+<p>The morning we rode out for Corsen, I packed my kit the way I always did — quickly, cheerfully, no ceremony — and told myself the small cold feeling sitting low in my chest was nothing, the same nerves I got before every mission, nothing a decent breakfast wouldn't fix. I have never believed in premonitions. I still don't, entirely, even knowing how that day ended. But I remember deciding, without quite deciding out loud, that I would walk point going up into those hills instead of letting one of the seniors take it, and I remember not telling Lyra why, because saying it would have meant admitting I was afraid of something I couldn't name, and I had spent my whole life being the one who wasn't afraid of anything. It was easier to just do it than to explain it.</p>
+<p>She caught my sleeve at the stable door anyway, the way she always did before a mission, quick and unshowy, more habit than gesture by then. "Don't be a hero," she told me — the same thing she told me before every mission, in the same dry tone, like it was a joke between us by then instead of the thing she actually meant.</p>
+<p>"Never," I told her, which was, I want it noted, a complete and total lie. And we rode out toward Corsen together, the whole unwritten rest of my life folded up small and certain in my chest, waiting for a future I fully intended to get to.</p>
+<p style="text-align:right; color:var(--muted); font-style:italic; margin-top:30px;">— end of interlude —</p>
+</section>
+<section class="chapter" data-chapter="4">
+<p class="kicker">Chapter Four</p>
+<h2>What the Water Boy Left</h2>
+<span class="voice">as remembered by Lyra</span>
+<p class="lead">The mission was called simple by everyone who assigned it and by no one who survived it. A Void-tear had opened in the hills above a hamlet called Corsen — smaller than the one that had swallowed the land past Ashenmoor, but tears didn't stay small, and the Church wanted it sealed before it did what tears always eventually did. Magistra Voss led our party of six: herself, Kael, me, and three graduating seniors I'd trained beside for two years. It should have been, by every measure the academy had taught us, well within our strength.</p>
+<p>What came out of the tear wasn't on any ledger the Church kept. It moved like smoke deciding to be an animal, and it screamed in a register that made the horses bolt and two of the seniors freeze solid with terror before it had even touched either of them. I dropped it to its knees with everything I had, the whole weight of the moon behind my hands, and it should have been enough — it would have been enough, against anything the ledgers had prepared us for. It wasn't enough. It rose again, wrong-jointed and furious, and turned for me the instant my strength guttered low from the effort of the first blow.</p>
+<p>Kael put himself between us without a word of warning, the same way he'd put himself between me and three boys behind a chapel seven years before, except this time the thing he was fighting didn't flinch at a face full of water. It went through his water-shield the way the tear went through everything the world understood, and it went through him a half-second later, and by the time my own magic came roaring back with a scream I don't remember deciding to make, there was nothing left in front of me to save.</p>
+<p>I held what was left of him while Magistra Voss and the last standing senior finally closed the tear behind us, and I didn't stop screaming for a long time — not sobbing, not weeping quietly the way grief is supposed to look in the stories, but screaming, raw and endless, the sound tearing out of my chest until my voice gave out and I kept making the shape of it anyway, silent, my whole body shaking with a sound that had nowhere left to go. Magistra Voss didn't tell me to stop. Nobody who had earned the right to speak that night told me to stop.</p>
+<p>We buried him three days later on the cliffside above Duskhaven, facing the sea he'd never much cared about but which was, I thought, at least honest about being enormous and indifferent, unlike the Church that stood over the grave and called his death a sacrifice in service of the light, as if light had been anywhere on that hillside when he died. I didn't cry at the funeral. I'd done all my crying already, in the dark, with his weight in my arms, and what came after the crying, I discovered, was something colder and stiller and far more useful — a calm that settled over me the way frost settles over a field, not an absence of feeling but a decision about where to put it. I thanked the priest for his words. I shook Magistra Voss's hand. I asked, in a voice that surprised everyone including myself with how steady it was, when my next mission would be.</p>
+</section>
+<section class="chapter" data-chapter="5">
+<p class="kicker">Chapter Five</p>
+<h2>The Long Quiet</h2>
+<span class="voice">as remembered by Lyra</span>
+<p class="lead">I finished my last year at Duskhaven the way I did everything after Corsen: competently, quietly, without complaint and without warmth. My marks were the best in my year. My missions came back clean. Magistra Voss, who had buried enough students to know the difference between a girl healing and a girl simply going very still, watched me the way you watch a bridge after a flood — not doubting it will hold, exactly, just aware that something underneath it has changed.</p>
+<p>On the morning of my graduation, Voss offered me a permanent commission — a seat on one of the Church's standing mission companies, good pay, a title, the kind of security most students would have wept for. I turned it down so evenly that Voss set her pen aside and actually looked at me. "You're angry at the ledger," she said. It wasn't a question. "You think if he hadn't been Church property, someone might have called that mission off before it killed him." "I think," I said, "that I'd rather choose which fights I take from now on, and answer for the choosing myself." Voss studied me for a long moment, then nodded once, the closest thing to approval I'd ever gotten out of her. "Independent contract-mages die just as easily," she warned. "Just with nobody writing it down." "Then I'll be careful," I said, "and I'll write it down myself."</p>
+<p>I left Duskhaven on a grey morning with a mage's traveling license, a chest of gear I'd earned rather than been issued, and no one to see me off but Voss, standing at the gate with her arms crossed against the cold. "You were the best thing to come out of that boy's death," Voss said, gruffly, which was as near to a eulogy as either of us would ever give Kael out loud. "Don't waste it feeling guilty for surviving him." I didn't answer that. I simply nodded, shouldered my pack, and walked down the cliff road toward the rest of my life, and if I cried once I was out of sight of the fortress, I never told anyone, and the moon, rising early and pale over the grey sea, didn't ask me to explain myself.</p>
+<p>The years that followed blurred the way years do when a person is working hard at not thinking too closely about any single one of them. I took contracts other mages wouldn't — Void-fringe work, mostly, the kind that paid well because it killed people who hesitated, and I'd stopped hesitating the day Kael stopped breathing. I built a name for myself under a name that wasn't quite my own — the Grey Moon, some frightened farmer had first called me, and it stuck the way nicknames stick to people who never bother to correct them. I was good at the work. I was, if I was honest with the only person who ever asked me to be — myself, at three in the morning, staring at ceilings — very lonely in exactly the specific shape Kael had left behind.</p>
+<p style="text-align:right; color:var(--muted); font-style:italic; margin-top:30px;">— end of Chapter Five —</p>
+</section>
+<section class="chapter" data-chapter="6">
+<p class="kicker">Chapter Six</p>
+<h2>The Auction at Kirrow</h2>
+<span class="voice">as remembered by Lyra</span>
+<p class="lead">Kirrow was a trade city built on a harbor and a shrug, the kind of place where six kingdoms' worth of law arrived at the docks and quietly agreed to stop applying. I'd come for a contract — a merchant house wanted a Void-tainted warehouse cleared before the harvest ships arrived — and I had four days to wait before the paperwork cleared, which was how I came to be walking through the market square on auction day at all.</p>
+<p>I had seen slave markets before, from a professional distance, the way a person learns to see a great many ugly things and keep walking because there is always a contract waiting and a room to pay for. I had never quite made myself watch one. I made myself watch this one, and wished immediately that I hadn't.</p>
+<p>The girl on the block was small even measured against my own memory of being small — elf-blooded, unmistakably, ears notched with old scars where someone had pierced them and torn the rings free more than once, and she stood on that platform with the particular flat stillness of a child who had learned that flinching only made things worse. The auctioneer was praising her hardiness, her youth, the years of service still in her, in the same tone a man might use to sell a good mule, and the crowd was murmuring numbers like it was any other Tuesday, and something in me — old, coiled, familiar — opened its eyes for the first time in years.</p>
+<p>I don't remember deciding to move. I remember being at the front of the crowd, the weight of the whole square pressing down at my call the way it hadn't since Corsen, the auctioneer's ledger sliding off the podium on its own, and my own voice, flat and very cold, naming a sum that ended the bidding before it started. I remember the trader's face when I paid it — the particular fear of a man realizing, too late, exactly what he'd been selling in front of. I remember crouching down afterward, level with the girl's eyes, and saying the only thing that felt true. "You don't have to flinch anymore. Not around me. I need you to believe that eventually, even if it isn't today."</p>
+<p>The girl didn't answer. She hadn't spoken, I'd learn later, in longer than the trader had bothered to track. But she didn't flinch either, when I reached out and, very slowly, cut the rope from her wrists with a knife instead of a spell, because a spell would have been faster and a knife let her watch it happen and know, with her own eyes, exactly when it ended. "My name's Lyra," I said. "What's yours?" It took three streets and one shared meal of bread and cheese before she finally answered, in a voice rusted almost to nothing from disuse. "Wren," she said. "It used to be Wren."</p>
+<p>"It still is," I told her, "if you want it to be. That's yours now. Nobody gets to take it again." Wren looked at me for a long moment with eyes far older than the rest of her, then did something I hadn't expected and would remember for the rest of my life: she reached out, small and uncertain, and took my hand.</p>
+<p style="text-align:right; color:var(--muted); font-style:italic; margin-top:30px;">— end of Chapter Six —</p>
+</section>
+<section class="chapter" data-chapter="7">
+
+<p class="kicker">Chapter Seven</p>
+<h2>Two Ghosts, One House</h2>
+<span class="voice">as remembered by Lyra</span>
+<p class="lead">I rented three rooms above a cooper's shop in a quiet river town well clear of Kirrow — the first fixed address I'd kept since Duskhaven — and told myself it was only sensible. A growing child needed somewhere that didn't move. I didn't examine too closely why it felt like the first thing I'd built instead of merely survived, not since the cliffside above Duskhaven.</p>
+<p>Wren didn't speak much, not at first, and I'd learned enough from my own long silence after Corsen not to push. Instead I put a slate and a stick of chalk on the table every morning and simply started, without ceremony, the way you teach a skill rather than announce a gift: letters first, then words, then the particular satisfaction of a sentence she'd made entirely by herself. She took to it with a hunger that told me, more clearly than any story she never told, exactly how much had been kept from her on purpose. Within a season she was reading contracts over my shoulder and correcting my arithmetic on market days, smug about it in a way that made me laugh out loud for the first time in longer than I wanted to admit.</p>
+<p>The rest of the lessons were more practical. I taught her which roadside plants stopped bleeding and which ones started it, how to splint a wrist and pack a wound and know the difference between a fever that needed watching and one that needed running for a healer. I taught her the careful, patient chemistry of a proper potion kit — which herbs wanted crushing and which wanted whole, why you never rushed a simmer, how to tell a healing draught gone right from one gone dangerously wrong by smell alone before it ever touched a tongue. And in the evenings, in the yard behind the cooper's shop, I taught her to fight — not to hurt, not yet, just to move, to block, to fall without breaking. We sparred with wooden practice blades until we were both laughing too hard to keep proper form, her small victories over my deliberately slow guard met with a fierce, delighted pride that had nothing left in it of the girl on the auction block.</p>
+<p>I didn't tell her about Kael for a long time, and when I finally did, one night by the fire when she asked, very carefully, why I sometimes went somewhere else behind my own eyes, I told her the whole of it plainly, because I'd decided early that she'd been lied to enough for one childhood and didn't need a second adult who edited the truth for her comfort. She listened without interrupting, and when I finished, she didn't offer comfort so much as company, in a small, solemn voice that broke my heart and mended some other part of it at exactly the same moment. "I'm sorry he died," she said. "I'm glad you didn't stay sad enough to leave me on that platform, though. Is that a bad thing to be glad about?" "No," I told her, throat tight. "That's the least bad thing either of us has felt in years."</p>
+<p style="text-align:right; color:var(--muted); font-style:italic; margin-top:30px;">— end of Chapter Seven —</p>
+</section>
+<section class="chapter" data-chapter="8">
+
+<p class="kicker">Chapter Eight</p>
+<h2>The Contract at Hollow Bridge</h2>
+<span class="voice">as remembered by Lyra</span>
+<p class="lead">The job at Hollow Bridge was meant to be mine alone — a toll-road plagued by bandits using a collapsed span as a chokepoint, simple work for a mage of my reputation — but Wren, twelve now and stubborn in the particular way of a child who's decided she's done being left in safe rooms, had packed her own kit the night before without asking and presented herself at the stable door already dressed for travel. "I can hold the horses. I can watch the road. I can bandage you if it goes wrong," she said, in the flat, unarguable tone she'd clearly practiced. "You taught me all of it. Let me use it."</p>
+<p>I could have said no. I thought about Corsen, about the particular arithmetic of who gets hurt when someone insists on being useful past their training, and I very nearly did say no. But I looked at her face — steady, sure, nothing at all like the flinching child on the auction block — and understood that saying no now would teach her exactly the wrong lesson about what all that training had been for. "You do exactly what I tell you, exactly when I tell you," I said instead. "The second I say run, you run, no arguing, no looking back to see if I'm following. Agreed?" "Agreed," she said, so fast it was clear she'd have agreed to anything.</p>
+<p>The bandits at Hollow Bridge were better organized than the contract had suggested — eleven of them dug into the collapsed span with a captured toll-keeper as leverage — and the fight that followed was ugly and close and went on twice as long as I'd planned for. It was Wren, crouched exactly where I'd told her to stay, who spotted the second group circling from the tree line and screamed the warning half a second before they'd have had me flanked — not a spell, not a blade, just a clear, carrying voice that gave me the half-second I needed to turn the fight instead of losing it. Afterward, with the toll-keeper freed and the bandits scattered or bound, I found her exactly where I'd left her, hands shaking, blood that wasn't hers on her sleeve from where she'd already started packing a wound on a fallen guard without being asked.</p>
+<p>"You did well," I told her, meaning it completely, crouching to check the bandage myself and finding nothing to correct. Her chin came up, fierce and proud and trying very hard not to show how frightened she'd been a moment before. "I told you I could," she said. I almost laughed, except my chest was too tight with something that felt uncomfortably like the particular pride of a parent — a word I'd never once let myself use out loud for what this had become between us. "You did," I agreed instead, and let that be enough for both of us, all the way back down the mountain road toward home.</p>
+<p style="text-align:right; color:var(--muted); font-style:italic; margin-top:30px;">— end of Chapter Eight —</p>
+</section>
+<section class="chapter" data-chapter="8b">
+
+<p class="kicker">Interlude</p>
+<h2>What the Wren Kept</h2>
+<span class="voice">as remembered by Wren</span>
+<p class="lead">I don't remember most of the auction block. I've tried, some nights, turning it over like a stone to see what's underneath, and mostly what's underneath is nothing — a fog I'd learned to make for myself long before Lyra ever cut the rope from my wrists, the same trick a body does to survive a winter it doesn't expect to walk out of. What I remember instead is smaller and stranger: the exact weight of her hand when she finally took mine, warm in a way I hadn't let myself notice hands could be.</p>
+<p>Trust, for me, wasn't a door that opened all at once. It was a hundred small tests I never told her I was running, and she passed every one without ever knowing there was an exam. She never raised her voice at me, not once, not even the week I broke her good inkwell testing whether she would. She never made me eat before her, or after her, or in any particular order at all — she just put two plates on the table, like that had always been the shape of things. It took me the better part of a year to stop flinching at raised hands that weren't even raised at me. She never once told me to hurry up and heal.</p>
+<p>She taught me to read before she taught me to fight, and I understood even then that the order mattered — that she wanted me to have words of my own before she gave me anything that could be mistaken for a weapon. When the fighting lessons finally came, they came slow and deliberately unthreatening, wooden blades and a guard she kept loose enough for me to beat on purpose, and I understood that too, eventually: she was teaching me that my own strength could belong to me instead of to whoever decided next to take it. Nobody had ever built anything for me on purpose before. I still don't quite have the word for what that felt like, except to say it felt like being unbroken instead of merely healed.</p>
+<p>The night she finally told me about Kael, I already half knew, the way you know a house has an empty room even before anyone shows it to you — she went somewhere else behind her eyes sometimes, somewhere I couldn't follow, and I'd learned the shape of her leaving long before I learned its cause. I asked because I wanted her to know I could hold something heavy for her, the way she'd been holding things heavy for me since the day she paid for me like I was worth more than the number some trader named. I meant what I told her that night, about being glad. I've never taken it back.</p>
+<p>Hollow Bridge was the first time she let me matter somewhere that could actually kill me, and I understood, packing my kit the night before without asking a permission I knew she wouldn't give if I asked it properly, that I was choosing it the same way she'd once chosen a knife over a faster spell — slower, on purpose, so I'd have to feel myself doing it and know I meant it. I was frightened in a way I hadn't let myself be since the auction block, and I discovered, crouched in the trees with my heart going like a hammer, that the fear was mine to carry now rather than something being done to me, and that the difference between those two things was the whole of what she'd spent three years teaching me.</p>
+<p>She calls it pride, the tightness in her chest when she looks at me like that. I think it's something else too, something neither of us has the nerve to name yet out loud, the way she never named what Kael was to her until it was almost too late to say it at all. I've decided I won't make that mistake twice on her behalf. So here it is, plainly, the way she taught me plain things matter most: she is the reason Wren is a name I get to keep instead of one that was simply left over. Whatever this is between us, I intend to go on calling it exactly what it's starting to feel like. Family. She can argue with the word later, if she wants to. I learned patience from someone who let a knife take longer than a spell, just so I'd know, with my own eyes, exactly when the cutting was finished.</p>
+<p style="text-align:right; color:var(--muted); font-style:italic; margin-top:30px;">— end of interlude —</p>
+</section>
+<section class="chapter" data-chapter="9">
+
+<p class="kicker">Chapter Nine</p>
+<h2>Salt and Iron</h2>
+<span class="voice">as remembered by Lyra</span>
+<p class="lead">By the time the Continental Guild sent riders to find me instead of waiting for me to find them, seven years had passed since Kirrow, and Wren had grown taller than the girl who'd once fit inside my traveling cloak with room to spare. I'd stopped bothering to correct the name people used for me by then. The Grey Moon had outgrown Lyra of Ashenmoor in every tavern between the coast and the eastern hills, and I'd learned there was no use arguing with a legend that paid better than the truth.</p>
+<p>The Guild kept its own ledger, and it had nothing to do with the Church's — no collar, no tithe, no priest weighing whether you were a blessing or a curse before he'd let you work. It measured one thing only: whether you came back from the jobs nobody else would take, and how many people were still breathing because you had. Ranks ran from F to S on a board in every guildhall from the coast to the eastern hills, and for most of my working life I'd watched other names climb it while mine sat quietly among the B's, useful and unremarkable. That changed the season I went into the Hollow Marsh alone, after three better-funded parties had gone in ahead of me and not come out.</p>
+<p>I won't pretend I remember all of it clearly. I remember mud to my knees and a sky the wrong color for that hour of the afternoon. I remember the tear itself, wider than any I'd faced since Corsen, breathing out something that wasn't smoke and wasn't fog and dropped the marsh birds dead out of the air if they flew too close to it. I remember closing it the way you close a wound you already know is going to scar badly no matter how careful your hands are, and I remember waking two days later in a healer's tent in Fenmarch with my hair gone half white at the temple — a souvenir I still carry — and a Guild courier already waiting outside to write down everything I could tell him.</p>
+<p>They gave me an iron ring instead of a medal, plain and unengraved, the kind a smith could make in an afternoon rather than a jeweler in a month — the Guild's idea of honesty, I think, about what the work actually was. "A-Rank," the Guildmaster told me, not smiling, sliding it across the table like it might still bite someone. "There are three others living who wear one of these. There's exactly one name above all of ours, in a rank we stopped pretending we understood how to award — S, on a plaque so old the paint's gone soft, and not one Guildmaster in three generations has met the person who earned it. You aren't that. Nobody expects you to be. But you're the closest thing this Guild has produced in a decade, and I'd rather you heard it from me than read it exaggerated off a wanted-work board in Kirrow."</p>
+<p>Wren whooped loud enough to startle a whole stable of guild horses when I told her, and made me wear the ring to supper that night, though it caught on everything and I nearly lost a finger to a soup ladle proving it worked. She had her own rank by then, a hard-earned C she was prouder of than I had ever been of anything at her age, and she toasted me with cider like the whole tavern belonged to us for the evening, which, for one evening, it very nearly did. I let myself enjoy it. I want that on the record, whatever comes after — I let myself enjoy it completely, without once looking over my shoulder to see who in that crowded, cheering room might be counting exactly how easy I'd be to find, later, once somebody decided that being the best-known mage in six kingdoms was a very different thing from being a safe one.</p>
+<p style="text-align:right; color:var(--muted); font-style:italic; margin-top:30px;">— end of Chapter Nine —</p>
+</section>
+<section class="chapter" data-chapter="10">
+<p class="kicker">Chapter Ten</p>
+<h2>The Church's Long Shadow</h2>
+<span class="voice">as remembered by Lyra</span>
+<p class="lead">The trouble had a name eight months before it ever had a face: the Writ of the Unbound, nailed to chapel doors in six kingdoms before midsummer, declaring that any mage working outside a parish collar and a Church ledger entry was to be considered a danger to the realm, regardless of guild rank, contract history, or public reputation. I read my own name in the pamphlet that came with it before I'd finished my second cup of tea in a coaching inn outside Fenmarch — the Grey Moon, cited by name as exactly the kind of uncontrolled power the Writ existed to correct.</p>
+<p>Wren read it over my shoulder twice before she said anything, which for her was practically an essay of alarm. "They can't just—" she started. "They can," I said, "and they have, on paper. Paper hasn't caught me yet." I meant it lightly. I did not, if I'm honest with the memory rather than the version of myself I wanted to be that morning, feel it lightly at all.</p>
+<p>The High Warden behind it, a man named Emeric Coldwell who'd risen through the Consistory faster than anyone that cautious usually rises, gave a sermon in Ashford market square not three weeks later that I stood at the back of, hood up, close enough to hear every word. He never said my name once. He didn't need to. He spoke instead of a woman with a silver mark and a Guild ring who let common folk mistake gratitude for safety, who had, in his words, "convinced an entire generation that a leash is the same thing as a friend simply because it does not currently pull." The crowd murmured agreement in places I recognized — a farmer whose barn I'd once cleared of a Void-taint infestation, nodding along like he'd never met me at all.</p>
+<p>I didn't tell Wren I'd been there until she noticed the set of my jaw hadn't softened by supper. "You should be angry," she said, when I finally told her. "I am angry," I said, which was true, though underneath the anger, quieter and far less useful, was something closer to grief — for a version of the world where being good at protecting people was still allowed to be enough, on its own, without a collar to make it official. Wren wanted to march back and argue with a market square. I wanted, more than I let her see, to be wrong about how this particular story usually ended for mages who let themselves become famous instead of merely feared.</p>
+<p>I've turned that sermon over more times since than I ever admitted to her, hunting for the exact moment I should have understood that a market square full of people I'd personally kept alive could still be talked into believing I was the danger. I never found it. I don't think there was one single moment. I think it's simply what fear does, given enough time and a patient enough voice telling it exactly where to point.</p>
+<p style="text-align:right; color:var(--muted); font-style:italic; margin-top:30px;">— end of Chapter Ten —</p>
+</section>
+<section class="chapter" data-chapter="11">
+<p class="kicker">Chapter Eleven</p>
+<h2>A City That Remembers</h2>
+<span class="voice">as remembered by Lyra</span>
+<p class="lead">I'd avoided Corsen for eleven years, the way you avoid a tooth you know is going to hurt if you press it, and I might have gone on avoiding it indefinitely if the Guild posting hadn't named the exact valley — a Void-taint bloom spreading from the same scarred ground where Kael died, patient and slow and entirely uninterested in how long I'd spent staying away from it.</p>
+<p>The town had grown since I'd last seen it, enough that I didn't recognize the inn where we took rooms, but the valley itself hadn't changed at all — the same scorched treeline, the same wrongness in the grass that never quite grew back right. An old woman at the market recognized me before I'd said a word, grabbed my sleeve with both hands, and thanked me for something I only half remembered doing — a fever she'd survived, a decade ago, because a young mage passing through had known which draught to make. Not everyone in that square looked at me the same way. I noticed the ones who didn't. I always did, by then.</p>
+<p>Closing the taint took three days and every trick I'd learned since the last time that ground had swallowed something precious out of me. I worked within sight of the exact rise where he'd fallen, close enough that I could've walked to it in under a minute, and didn't, the whole three days, though Wren caught me looking at it more than once and had the grace not to ask. On the last night, with the ground finally quiet under my hands for the first time in eleven years, I let myself walk up there after everyone else was asleep and sat where I thought the spot probably was, close enough for memory's sake if not for certainty's, and told him, out loud, foolishly, everything he'd missed. Wren. The Guild ring. All of it. The valley didn't answer. I hadn't expected it to. I said it anyway.</p>
+<p>Not every conversation in Corsen went as gently as the old woman's. A younger man, maybe not yet born the year Kael died, spat near my boots outside the chapel and called me exactly the word Coldwell's sermon had been teaching people to use for months, and when the innkeeper — old enough to remember, old enough to still be grateful — told him sharply to hold his tongue, the young man didn't back down so much as go quiet in a way that frightened me more than shouting would have. I'd seen that particular quiet before, in every crowd that eventually decides shouting isn't necessary anymore.</p>
+<p>We left Corsen the way I'd left it the first time — walking, no fanfare, the valley finally at rest behind us — except this time I understood, in a way sixteen-year-old me hadn't needed to yet, that some ground doesn't finish taking from you just because you've closed the wound in it. I thought I meant the valley. I've had a great deal of time since to wonder whether I actually meant the whole world.</p>
+<p style="text-align:right; color:var(--muted); font-style:italic; margin-top:30px;">— end of Chapter Eleven —</p>
+</section>
+<section class="chapter" data-chapter="12">
+<p class="kicker">Chapter Twelve</p>
+<h2>The Informant</h2>
+<span class="voice">as remembered by Lyra</span>
+<p class="lead">The man who found us in Duskhaven's lower market gave no name, which told me more about him than a name would have. He wore an acolyte's grey under a traveler's cloak too fine for either role, and he pressed something small and folded into Wren's hand instead of mine — the careful habit of a man who'd learned never to assume which of us was the one wearing the Guild ring. "Burn it after you've read it," he said, and was gone into the crowd before we'd finished turning to look for him.</p>
+<p>It was a list. Six names, written in a hand too neat to belong to whoever had actually compiled it — a clerk's hand, copying someone else's order. Mine was the fourth. Coldwell had put a date beside each one, the way the Warden used to write a word in his grey ledger and move on to the next head of hair that lifted wrong in the cold. A fortnight, the note said, before the writs went to the city guard instead of staying quiet in some bishop's drawer. Whoever had sent it wanted that fortnight spent running, or spent somewhere a great deal braver than I felt standing in that market with the paper going damp in Wren's fist.</p>
+<p>"Could be a trap," Wren said, which was also what I was thinking, and neither of us said the other obvious thing — that it could be true as well, and both of those were reasons to be afraid in exactly the same amount. I asked why anyone inside the Church would risk a man's own neck warning mages at all. Wren turned the paper over and showed me the reason I'd missed: a small mark pressed into the wax that had sealed it, a sigil I hadn't seen since Duskhaven Academy, half-remembered from a tutor who'd vanished partway through my second year without anyone quite explaining why.</p>
+<p>I stood a long time with that memory before it resolved into anything useful. Not everyone the Church swallowed stayed swallowed, apparently. Some of them kept the shape of the thing they'd been trained to be and simply pointed it a different direction, quietly, for years, waiting for a use worth the risk. I didn't know yet whether that made the warning more trustworthy or less. I still don't, if I'm honest, even knowing now how the rest of it unfolded.</p>
+<p>We didn't burn the list that night. I told myself it was evidence, the sensible mage's reasoning, the kind Wren could usually be talked into even when caution argued otherwise. The truer reason was smaller and far less sensible: six names felt like a weight I needed to carry a little longer before I let it go, the way you hold a bruise a moment after you've already confirmed it hurts. Four names besides my own. Four people who didn't yet know a fortnight was all the ordinary life they had left, and one sigil pressed into wax that meant somebody, somewhere inside the thing that had spent my whole life deciding what I was, had chosen — for reasons I couldn't yet guess at — not to let that happen without a warning first.</p>
+<p style="text-align:right; color:var(--muted); font-style:italic; margin-top:30px;">— end of Chapter Twelve —</p>
+</section>
+</article>
+<section class="comments" id="comments">
+<h3>Comments</h3>
+<p class="comments-subtitle">Thoughts, theories, and reactions from everyone reading along — synced across every device.</p>
+<div aria-hidden="true" class="comments-wave">
+<svg class="w1" preserveaspectratio="none" viewbox="0 0 800 40"><path d="M0 18 Q25 9 50 18 T100 18 T150 18 T200 18 T250 18 T300 18 T350 18 T400 18 T450 18 T500 18 T550 18 T600 18 T650 18 T700 18 T750 18 T800 18 V40 H0Z" style="fill:var(--aqua);" opacity="0.22"></path></svg>
+<svg class="w2" preserveaspectratio="none" viewbox="0 0 800 40"><path d="M0 25 Q25 33 50 25 T100 25 T150 25 T200 25 T250 25 T300 25 T350 25 T400 25 T450 25 T500 25 T550 25 T600 25 T650 25 T700 25 T750 25 T800 25 V40 H0Z" style="fill:var(--aqua);" opacity="0.34"></path></svg>
+<svg class="w3" preserveaspectratio="none" viewbox="0 0 800 40"><path d="M0 31 Q25 25 50 31 T100 31 T150 31 T200 31 T250 31 T300 31 T350 31 T400 31 T450 31 T500 31 T550 31 T600 31 T650 31 T700 31 T750 31 T800 31 V40 H0Z" style="fill:var(--aqua);" opacity="0.55"></path><path d="M0 31 Q25 25 50 31 T100 31 T150 31 T200 31 T250 31 T300 31 T350 31 T400 31 T450 31 T500 31 T550 31 T600 31 T650 31 T700 31 T750 31 T800 31" fill="none" style="stroke:var(--aqua-soft);" stroke-width="1.3" opacity=".85"></path></svg>
+</div>
+<form class="comment-form" id="commentForm">
+<textarea id="commentInput" maxlength="1000" placeholder="What did you think about the story?" required=""></textarea>
+<div class="comment-actions">
+<span class="comment-status" id="commentStatus">Sign in above to comment.</span>
+<button class="btn-solid" id="commentSubmit" type="submit">Post comment</button>
+</div>
+</form>
+<div class="comment-list" id="commentList">
+<div class="comment-empty">Loading comments...</div>
+</div>
+</section>
+</main>
+<footer>The Void Between · a story in progress · more chapters to come</footer>
+<dialog id="signInDialog">
+<form autocomplete="on" id="signInForm">
+<svg aria-hidden="true" class="dialog-crest" viewbox="0 0 40 40">
+<circle cx="20" cy="20" fill="none" r="17.5" stroke="var(--border)" stroke-width="1.4"></circle>
+<path d="M20 3a17 17 0 000 34" fill="none" opacity=".7" stroke="var(--accent2)" stroke-width="1.3"></path>
+<path d="M25 7a13.5 13.5 0 100 26 10.8 10.8 0 010-26z" fill="var(--accent)"></path>
+<path d="M6 24c3-3 6-3 9 0s6 3 9 0" fill="none" stroke="var(--accent2)" stroke-linecap="round" stroke-width="1.6"></path>
+</svg>
+<h3 style="margin-top:0;">Sign the Archive</h3>
+<label for="emailInput">Email</label>
+<input autocomplete="email" id="emailInput" name="email" placeholder="your@email.com" type="email"/>
+<p id="ownerLoginHint" style="margin:6px 0 0; font-size:.85rem; color:var(--muted);">For owner access, use the Helix Crown Supabase account email and password.</p>
+<label for="nameInput">What name do you read under?</label>
+<input autocomplete="nickname" id="nameInput" maxlength="24" name="username" placeholder="Your name" required=""/>
+<label for="passInput">Password</label>
+<input autocomplete="new-password" id="passInput" minlength="6" name="password" placeholder="At least 6 characters" required="" type="password"/>
+<div id="confirmPasswordWrap">
+<label for="confirmPassInput">Confirm password</label>
+<input autocomplete="new-password" id="confirmPassInput" minlength="6" name="confirmPassword" placeholder="Type your password again" type="password"/>
+</div>
+<p class="signin-hint" id="signInHint"></p>
+<div style="display:flex; gap:8px; justify-content:flex-end;">
+<button id="cancelSignIn" type="button">Cancel</button>
+<button class="btn-solid" id="confirmSignIn" type="submit">Create account</button>
+</div>
+<p style="margin:12px 0 0; font-size:.9rem; text-align:center;">
+<span id="accountSwitchText">Already have an account?</span>
+<button id="switchToLogin" style="background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;" type="button">
+        Sign in
+      </button>
+</p>
+<p id="forgotPasswordWrap" style="margin:10px 0 0; font-size:.9rem; text-align:center; display:none;">
+<button id="forgotPassword" style="background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;" type="button">
+        Forgot password?
+      </button>
+</p>
+</form>
+</dialog>
+<dialog id="resetPasswordDialog">
+<form id="resetPasswordForm">
+<svg aria-hidden="true" class="dialog-crest" viewbox="0 0 40 40">
+<circle cx="20" cy="20" fill="none" r="17.5" stroke="var(--border)" stroke-width="1.4"></circle>
+<path d="M20 3a17 17 0 000 34" fill="none" opacity=".7" stroke="var(--accent2)" stroke-width="1.3"></path>
+<path d="M25 7a13.5 13.5 0 100 26 10.8 10.8 0 010-26z" fill="var(--accent)"></path>
+<path d="M6 24c3-3 6-3 9 0s6 3 9 0" fill="none" stroke="var(--accent2)" stroke-linecap="round" stroke-width="1.6"></path>
+</svg>
+<h3 style="margin-top:0;">Reset your password</h3>
+<p style="font-size:.92rem; color:var(--muted);">Enter the email on your account. Supabase will send you a secure password-reset link.</p>
+<label for="resetEmailInput">Email</label>
+<input autocomplete="email" id="resetEmailInput" placeholder="your@email.com" required="" type="email"/>
+<p class="signin-hint" id="resetPasswordHint"></p>
+<div style="display:flex; gap:8px; justify-content:flex-end;">
+<button id="cancelResetPassword" type="button">Cancel</button>
+<button class="btn-solid" id="sendResetButton" type="submit">Send reset email</button>
+</div>
+</form>
+</dialog>
+<dialog id="newPasswordDialog">
+<form id="newPasswordForm">
+<svg aria-hidden="true" class="dialog-crest" viewbox="0 0 40 40">
+<circle cx="20" cy="20" fill="none" r="17.5" stroke="var(--border)" stroke-width="1.4"></circle>
+<path d="M20 3a17 17 0 000 34" fill="none" opacity=".7" stroke="var(--accent2)" stroke-width="1.3"></path>
+<path d="M25 7a13.5 13.5 0 100 26 10.8 10.8 0 010-26z" fill="var(--accent)"></path>
+<path d="M6 24c3-3 6-3 9 0s6 3 9 0" fill="none" stroke="var(--accent2)" stroke-linecap="round" stroke-width="1.6"></path>
+</svg>
+<h3 style="margin-top:0;">Choose a new password</h3>
+<label for="newPasswordInput">New password</label>
+<input autocomplete="new-password" id="newPasswordInput" minlength="6" placeholder="At least 6 characters" required="" type="password"/>
+<label for="newPasswordConfirmInput">Confirm new password</label>
+<input autocomplete="new-password" id="newPasswordConfirmInput" minlength="6" placeholder="Type it again" required="" type="password"/>
+<p class="signin-hint" id="newPasswordHint"></p>
+<div style="display:flex; gap:8px; justify-content:flex-end;">
+<button class="btn-solid" id="saveNewPasswordButton" type="submit">Save new password</button>
+</div>
+</form>
+</dialog>
+<div class="welcome-overlay" id="welcomeOverlay">
+<div aria-hidden="true" class="welcome-sparkles" id="welcomeSparkles"></div>
+<div aria-labelledby="welcomeTitle" aria-live="polite" class="welcome-card" role="alertdialog">
+<svg aria-hidden="true" class="welcome-elf" viewBox="0 0 200 224">
+<defs>
+<radialGradient id="elfAura" cx="50%" cy="46%" r="50%"><stop offset="0" stop-color="#bfeaff" stop-opacity=".75"/><stop offset=".6" stop-color="#cdb8ff" stop-opacity=".25"/><stop offset="1" stop-color="#cdb8ff" stop-opacity="0"/></radialGradient>
+<linearGradient id="elfHair" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4ecff"/><stop offset=".55" stop-color="#d2bcff"/><stop offset="1" stop-color="#9a7be0"/></linearGradient>
+<linearGradient id="elfHairFront" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbf6ff"/><stop offset="1" stop-color="#c3a8f5"/></linearGradient>
+<linearGradient id="elfSkin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe9d9"/><stop offset="1" stop-color="#f6cfb8"/></linearGradient>
+<linearGradient id="elfDress" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3fb5a8"/><stop offset="1" stop-color="#1f7a7a"/></linearGradient>
+<radialGradient id="elfIris" cx="50%" cy="35%" r="70%"><stop offset="0" stop-color="#9ff0e6"/><stop offset=".6" stop-color="#2fa6b8"/><stop offset="1" stop-color="#1b5f86"/></radialGradient>
+</defs>
+<circle class="elf-aura" cx="100" cy="100" r="98" fill="url(#elfAura)"/>
+<path class="elf-hairback" d="M100 18C56 18 38 62 42 112C44 148 36 180 24 206C54 204 78 192 88 172L112 172C122 192 146 204 176 206C164 180 156 148 158 112C162 62 144 18 100 18Z" fill="url(#elfHair)"/>
+<path d="M44 224C46 192 68 178 100 178C132 178 154 192 156 224Z" fill="url(#elfDress)"/>
+<path d="M84 146L82 178Q100 206 118 178L116 146Z" fill="#f1c9b0"/>
+<path d="M82 178Q100 206 118 178" fill="none" stroke="#f2d98a" stroke-width="3" stroke-linecap="round"/>
+<circle cx="100" cy="199" r="3.4" fill="#bff0ff" stroke="#f2d98a" stroke-width="1"/>
+<path d="M64 100L26 78Q34 104 62 118Z" fill="url(#elfSkin)"/>
+<path d="M60 102L38 86Q44 102 60 110Z" fill="#f6b9a8" opacity=".6"/>
+<path d="M136 100L174 78Q166 104 138 118Z" fill="url(#elfSkin)"/>
+<path d="M140 102L162 86Q156 102 140 110Z" fill="#f6b9a8" opacity=".6"/>
+<circle cx="57" cy="113" r="2.3" fill="#bff0ff" stroke="#f2d98a" stroke-width=".8"/>
+<circle cx="143" cy="113" r="2.3" fill="#bff0ff" stroke="#f2d98a" stroke-width=".8"/>
+<path d="M100 48C70 48 60 74 62 100C64 130 80 150 100 152C120 150 136 130 138 100C140 74 130 48 100 48Z" fill="url(#elfSkin)"/>
+<ellipse cx="74" cy="124" rx="8" ry="5" fill="#ff9fb0" opacity=".38"/>
+<ellipse cx="126" cy="124" rx="8" ry="5" fill="#ff9fb0" opacity=".38"/>
+<path d="M72 90Q82 84 94 89" fill="none" stroke="#8d6fc9" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M106 89Q118 84 128 90" fill="none" stroke="#8d6fc9" stroke-width="2.2" stroke-linecap="round"/>
+<g class="elf-eyes">
+<ellipse cx="83" cy="106.5" rx="10" ry="8.5" fill="#fff"/>
+<circle cx="83" cy="107" r="6.8" fill="url(#elfIris)"/>
+<circle cx="83" cy="107" r="3.2" fill="#1d2447"/>
+<circle cx="80.5" cy="104" r="2.1" fill="#fff"/><circle cx="86" cy="110" r="1" fill="#fff" opacity=".8"/>
+<path d="M72 104Q83 93 94 104" fill="none" stroke="#4a3566" stroke-width="3" stroke-linecap="round"/>
+<path d="M72 104L67 100" stroke="#4a3566" stroke-width="2.4" stroke-linecap="round"/>
+<path d="M74 111Q83 117 92 111" fill="none" stroke="#e5b8a0" stroke-width="1.4" stroke-linecap="round" opacity=".7"/>
+<ellipse cx="117" cy="106.5" rx="10" ry="8.5" fill="#fff"/>
+<circle cx="117" cy="107" r="6.8" fill="url(#elfIris)"/>
+<circle cx="117" cy="107" r="3.2" fill="#1d2447"/>
+<circle cx="114.5" cy="104" r="2.1" fill="#fff"/><circle cx="120" cy="110" r="1" fill="#fff" opacity=".8"/>
+<path d="M106 104Q117 93 128 104" fill="none" stroke="#4a3566" stroke-width="3" stroke-linecap="round"/>
+<path d="M128 104L133 100" stroke="#4a3566" stroke-width="2.4" stroke-linecap="round"/>
+<path d="M108 111Q117 117 126 111" fill="none" stroke="#e5b8a0" stroke-width="1.4" stroke-linecap="round" opacity=".7"/>
+</g>
+<path d="M99 118Q101.5 121 98.5 122" fill="none" stroke="#e0a98f" stroke-width="1.6" stroke-linecap="round"/>
+<path d="M88 130Q100 136 112 130Q109 144 100 144Q91 144 88 130Z" fill="#a8445a"/>
+<path d="M89.6 131.2Q100 136.4 110.4 131.2Q109.4 135 100 136.6Q90.6 135 89.6 131.2Z" fill="#fff"/>
+<path d="M94 140.5Q100 137.5 106 140.5Q103 143.6 100 143.6Q97 143.6 94 140.5Z" fill="#e8788d"/>
+<path d="M84 128Q82.5 131 84.5 134" fill="none" stroke="#e0a98f" stroke-width="1.4" stroke-linecap="round"/>
+<path d="M116 128Q117.5 131 115.5 134" fill="none" stroke="#e0a98f" stroke-width="1.4" stroke-linecap="round"/>
+<path d="M58 100C46 56 70 30 102 30C134 30 154 56 142 100C140 84 134 72 120 62Q112 56 104 54Q76 62 58 100Z" fill="url(#elfHairFront)"/>
+<path d="M60 98C54 120 58 142 50 166C64 156 72 136 70 108Z" fill="url(#elfHairFront)"/>
+<path d="M140 98C146 120 142 142 150 166C136 156 128 136 130 108Z" fill="url(#elfHairFront)"/>
+<path d="M64 82Q100 66 136 82" fill="none" stroke="#f2d98a" stroke-width="2.4" stroke-linecap="round"/>
+<path d="M100 67L105 74L100 81L95 74Z" fill="#9fe8ff" stroke="#f2d98a" stroke-width="1"/>
+<path d="M138 84Q152 70 160 80Q150 90 138 84Z" fill="#6cc9a8"/>
+<path d="M140 90Q156 90 160 100Q146 102 140 90Z" fill="#4aaa8f"/>
+<path class="elf-twinkle" style="animation-delay:0s" transform="translate(28 40)" d="M0-7L1.8-1.8L7 0L1.8 1.8L0 7L-1.8 1.8L-7 0L-1.8-1.8Z" fill="#fff"/>
+<path class="elf-twinkle" style="animation-delay:.9s" transform="translate(176 52)" d="M0-7L1.8-1.8L7 0L1.8 1.8L0 7L-1.8 1.8L-7 0L-1.8-1.8Z" fill="#bfeaff"/>
+<path class="elf-twinkle" style="animation-delay:1.6s" transform="translate(168 150)" d="M0-6L1.6-1.6L6 0L1.6 1.6L0 6L-1.6 1.6L-6 0L-1.6-1.6Z" fill="#ffe9a8"/>
+<path class="elf-twinkle" style="animation-delay:2.2s" transform="translate(32 148)" d="M0-6L1.6-1.6L6 0L1.6 1.6L0 6L-1.6 1.6L-6 0L-1.6-1.6Z" fill="#fff"/>
+</svg>
+<p class="welcome-kicker">The Void Between</p>
+<h2 class="welcome-title" id="welcomeTitle">Welcome, <span id="welcomeName">Reader</span></h2>
+<p class="welcome-sub" id="welcomeSub">You've just entered Lyra the elf's story.</p>
+<button class="btn-solid welcome-continue" id="welcomeContinue" type="button">Begin reading</button>
+</div>
+</div>
+<button aria-label="Back to top" id="toTop" title="Back to top" type="button">↑</button>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* Supabase connection — replace the two placeholders with your own values.
+   Use your Project URL and Publishable key. Never put a Secret/service_role key here. */
+const SUPABASE_URL = "https://erjuymehpxohkdbtpxdv.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_DPqfb2UVv-Wlp2SVoCGUwg_3GU9jQ3d";
+const supabaseClient = (window.supabase && window.supabase.createClient)
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
+  : null;
+
+let currentAuthUser = null;
+let supabaseReady = !!supabaseClient;
+
+// Secure owner identity: the role comes from Supabase Auth app_metadata.
+// No owner password is stored in this HTML.
+const OWNER_NAME = 'Helix Crown';
+function getIsOwner(){
+  return !!(currentAuthUser && currentAuthUser.app_metadata?.role === 'owner');
+}
+
+function getReaderName(user=currentAuthUser){
+  if (getIsOwner()) return OWNER_NAME;
+  if (user) return (user?.user_metadata?.reader_name || user?.email?.split('@')[0] || 'Reader').slice(0,24);
+  return '';
+}
+
+function setSignInHint(message, error=false){
+  const el = document.getElementById('signInHint');
+  if (!el) return;
+  el.textContent = message || '';
+  el.style.color = error ? 'var(--accent, #b44)' : '';
+}
+
+async function refreshAuthUI(){
+  if (supabaseClient) {
+    const { data } = await supabaseClient.auth.getSession();
+    currentAuthUser = data?.session?.user || null;
+  } else {
+    currentAuthUser = null;
+  }
+
+  const signInButton = document.getElementById('openSignIn') || document.querySelector('[data-signin], #signInButton, #signIn');
+  if (signInButton) {
+    signInButton.textContent = getIsOwner() ? `Signed in as ${OWNER_NAME}` : (currentAuthUser ? `Signed in as ${getReaderName(currentAuthUser)}` : 'Sign in');
+    signInButton.onclick = () => {
+      if (currentAuthUser || getIsOwner()) return;
+      document.getElementById('signInDialog')?.showModal();
+    };
+  }
+
+  const status = document.getElementById('commentStatus');
+  if (status) {
+    status.textContent = getIsOwner()
+      ? `Signed in as ${OWNER_NAME}.`
+      : (currentAuthUser ? `Signed in as ${getReaderName(currentAuthUser)}.` : 'Sign in above to comment.');
+  }
+
+  const submit = document.getElementById('commentSubmit');
+  if (submit) submit.disabled = !(currentAuthUser || getIsOwner());
+
+  renderUser();
+}
+
+if (supabaseClient) {
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    // Always mirror Supabase's current session, including sign-out or
+    // session expiry. Never leave a stale owner flag in the page.
+    currentAuthUser = session?.user || null;
+    refreshAuthUI();
+    if (typeof applyOwnerChapterAccess === 'function') applyOwnerChapterAccess();
+  });
+}
+
+refreshAuthUI();
+
+/* Welcome overlay — a short, themed moment shown right after a reader
+   signs up or signs in. Purely presentational; it never blocks auth. */
+const welcomeOverlay = document.getElementById('welcomeOverlay');
+const welcomeNameEl = document.getElementById('welcomeName');
+const welcomeSubEl = document.getElementById('welcomeSub');
+let welcomeHideTimer = null;
+function showWelcomeOverlay(name, isNewAccount){
+  if (!welcomeOverlay) return;
+  if (welcomeNameEl) welcomeNameEl.textContent = name || 'Reader';
+  if (welcomeSubEl) welcomeSubEl.textContent = isNewAccount
+    ? "Your name is written in the Archive now — Lyra the elf's story is yours to follow."
+    : "Welcome back — Lyra the elf's story continues where you left off.";
+  welcomeOverlay.classList.add('show');
+  document.body.classList.add('reading-blurred');
+  clearTimeout(welcomeHideTimer);
+  welcomeHideTimer = setTimeout(hideWelcomeOverlay, 7500);
+}
+function hideWelcomeOverlay(){
+  welcomeOverlay?.classList.remove('show');
+  document.body.classList.remove('reading-blurred');
+  clearTimeout(welcomeHideTimer);
+}
+document.getElementById('welcomeContinue')?.addEventListener('click', hideWelcomeOverlay);
+welcomeOverlay?.addEventListener('click', e => { if (e.target === welcomeOverlay) hideWelcomeOverlay(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && welcomeOverlay?.classList.contains('show')) hideWelcomeOverlay(); });
+
+const root=document.documentElement;
+const themeBtn=document.getElementById('themeBtn');
+function applyTheme(t){ if(t){root.setAttribute('data-theme',t);} else {root.removeAttribute('data-theme');} }
+try{ applyTheme(localStorage.getItem('vb_theme')); }catch(e){}
+themeBtn.addEventListener('click',()=>{
+  const current = root.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme:dark)').matches ? 'dark':'light');
+  const next = current==='dark' ? 'light':'dark';
+  applyTheme(next);
+  try{ localStorage.setItem('vb_theme', next); }catch(e){}
+});
+
+const fsMinus=document.getElementById('fsMinus'), fsPlus=document.getElementById('fsPlus');
+const FS_MAX=3;
+function setFs(n){
+  n=Math.max(0,Math.min(FS_MAX,n));
+  if(n===0) root.removeAttribute('data-fs'); else root.setAttribute('data-fs', String(n));
+  try{ localStorage.setItem('vb_fs', String(n)); }catch(e){}
+  fsMinus.disabled = n===0; fsPlus.disabled = n===FS_MAX;
+}
+let startFs=0;
+try{ const fs=localStorage.getItem('vb_fs'); if(fs) startFs=parseInt(fs,10)||0; }catch(e){}
+setFs(startFs);
+fsMinus.addEventListener('click',()=>setFs(parseInt(root.getAttribute('data-fs')||'0',10)-1));
+fsPlus.addEventListener('click',()=>setFs(parseInt(root.getAttribute('data-fs')||'0',10)+1));
+const dlg=document.getElementById('signInDialog');
+const userArea=document.getElementById('userArea');
+function renderUser(){
+  if (!userArea) return;
+  userArea.innerHTML='';
+  if (getIsOwner()) {
+    const span=document.createElement('span');
+    span.innerHTML='Reading as '+escapeHtmlForHeader(OWNER_NAME)+' <span class="owner-badge">Owner</span> · ';
+    span.style.color='var(--muted)'; span.style.marginRight='4px'; span.style.fontSize='.9rem';
+    const out=document.createElement('button');
+    out.textContent='Sign out';
+    out.onclick=async()=>{ if(supabaseClient) await supabaseClient.auth.signOut(); currentAuthUser=null; renderUser(); updateCommentFormState?.(); applyOwnerChapterAccess?.(); };
+    userArea.appendChild(span); userArea.appendChild(out);
+  } else if (currentAuthUser) {
+    const span=document.createElement('span');
+    span.textContent='Reading as '+getReaderName(currentAuthUser)+' · ';
+    span.style.color='var(--muted)'; span.style.marginRight='4px'; span.style.fontSize='.9rem';
+    const out=document.createElement('button');
+    out.textContent='Sign out';
+    out.onclick=async()=>{ if(supabaseClient) await supabaseClient.auth.signOut(); currentAuthUser=null; renderUser(); updateCommentFormState?.(); applyOwnerChapterAccess?.(); };
+    userArea.appendChild(span); userArea.appendChild(out);
+  } else {
+    const btn=document.createElement('button');
+    btn.className='btn-solid'; btn.id='openSignInDynamic'; btn.textContent='Sign in';
+    btn.onclick=()=>dlg?.showModal();
+    userArea.appendChild(btn);
+  }
+}
+
+function escapeHtmlForHeader(value){
+  const div=document.createElement('div'); div.textContent=value ?? ''; return div.innerHTML;
+}
+document.getElementById('cancelSignIn').onclick=()=>{ dlg.close(); document.getElementById('signInHint').textContent=''; };
+
+renderUser();
+
+const tocDetails=document.getElementById('tocDetails');
+if(window.innerWidth<641){ tocDetails.removeAttribute('open'); }
+  const OWNER_ONLY_CHAPTERS = new Set();
+
+  function applyOwnerChapterAccess(){
+    document.body.classList.toggle('owner-authenticated', getIsOwner());
+
+    document.querySelectorAll('#tocList a[data-ch]').forEach(a => {
+      const ch = a.getAttribute('data-ch');
+      const locked = OWNER_ONLY_CHAPTERS.has(ch);
+      a.classList.toggle('owner-locked-link', locked && !getIsOwner());
+      a.setAttribute('aria-disabled', locked && !getIsOwner() ? 'true' : 'false');
+    });
+  }
+
+  function openOwnerSignIn(){
+    if (!signInDialog) return;
+    signInMode = 'login';
+    updateAuthDialog();
+    setSignInHint('Owner access requires the Helix Crown Supabase email and password.');
+    signInDialog.showModal();
+  }
+
+  document.querySelectorAll('.owner-signin-button').forEach(button => {
+    button.addEventListener('click', openOwnerSignIn);
+  });
+
+  // Chapter navigation: every real chapter link must actually switch the
+  // visible chapter. Owner-only chapters open the owner sign-in dialog for
+  // ordinary readers instead of silently doing nothing.
+  document.querySelectorAll('#tocList a[data-ch]').forEach(a => {
+    a.addEventListener('click', event => {
+      event.preventDefault();
+      const ch = a.getAttribute('data-ch');
+      const isOwnerOnly = OWNER_ONLY_CHAPTERS.has(ch);
+
+      if (isOwnerOnly && !getIsOwner()) {
+        openOwnerSignIn();
+        return;
+      }
+
+      const target = document.querySelector(`.chapter[data-chapter="${CSS.escape(ch)}"]`);
+      if (!target) {
+        console.error('Chapter target not found:', ch);
+        return;
+      }
+
+      document.querySelectorAll('#reader .chapter').forEach(section => {
+        section.classList.toggle('active', section === target);
+      });
+      document.querySelectorAll('#tocList a[data-ch]').forEach(link => {
+        link.classList.toggle('active', link === a);
+      });
+
+      document.getElementById('reader')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+
+      if (window.innerWidth < 641) {
+        tocDetails?.removeAttribute('open');
+      }
+    });
+  });
+
+  function refreshPaidChapterLocks(){
+    applyOwnerChapterAccess();
+  }
+  refreshPaidChapterLocks();
+
+/*
+  SHARED COMMENTS — Supabase
+  Comments are saved online in the public.comments table, so readers on
+  different phones/computers can see the same comments.
+*/
+const commentForm = document.getElementById('commentForm');
+const commentInput = document.getElementById('commentInput');
+const commentList = document.getElementById('commentList');
+const commentStatus = document.getElementById('commentStatus');
+const commentSubmit = document.getElementById('commentSubmit');
+
+function escapeHtml(value){
+  const div = document.createElement('div');
+  div.textContent = value ?? '';
+  return div.innerHTML;
+}
+
+function formatCommentDate(value){
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleString(undefined, { dateStyle:'medium', timeStyle:'short' });
+}
+
+function initials(name){
+  const parts=(name||'').trim().split(/\s+/).slice(0,2);
+  const letters=parts.map(w=>w[0]||'').join('').toUpperCase();
+  return letters || '?';
+}
+
+const seenCommentIds = new Set();
+let commentStagger = 0;
+function renderComments(comments){
+  commentList.innerHTML = '';
+  commentStagger = 0;
+  if (!comments.length) {
+    commentList.innerHTML = '<div class="comment-empty">No comments yet. Be the first to share your thoughts.</div>';
+    return;
+  }
+
+  const isOwner = getIsOwner();
+  const myUserId = currentAuthUser?.id || null;
+  const byParent = new Map();
+  comments.forEach(comment => {
+    const parent = comment.parent_id || null;
+    if (!byParent.has(parent)) byParent.set(parent, []);
+    byParent.get(parent).push(comment);
+  });
+
+  function addComment(comment, container, depth=0){
+    const isMine = !!(myUserId && comment.user_id === myUserId);
+    const canEdit = isOwner || isMine;
+    const canDelete = isOwner || isMine;
+    const item = document.createElement('article');
+    item.className = 'comment' + (depth ? ' comment-reply' : '');
+    if (seenCommentIds.has(String(comment.id))) { item.classList.add('seen'); }
+    else { item.style.animationDelay = Math.min(commentStagger++, 8) * 70 + 'ms'; seenCommentIds.add(String(comment.id)); }
+    item.dataset.id = comment.id;
+    item.innerHTML = `
+      <div class="comment-head">
+        <span class="comment-avatar">${escapeHtml(initials(comment.name))}</span>
+        <span class="comment-name${comment.name === OWNER_NAME ? ' owner-comment' : ''}">${escapeHtml(comment.name || 'A reader')}</span>
+        ${comment.name === OWNER_NAME ? '<span class="owner-badge">OWNER</span>' : ''}
+        <span class="comment-date">${escapeHtml(formatCommentDate(comment.created_at))}</span>
+      </div>
+      ${comment.updated_at && comment.updated_at !== comment.created_at ? '<div class="comment-edited">edited</div>' : ''}
+      <p class="comment-text">${escapeHtml(comment.comment || '')}</p>
+      <div class="comment-controls">
+        <button type="button" class="comment-reply-btn" data-id="${escapeHtml(String(comment.id))}">Reply</button>
+        ${canEdit ? `<button type="button" class="comment-edit" data-id="${escapeHtml(String(comment.id))}">Edit</button>` : ''}
+        ${canDelete ? `<button type="button" class="comment-delete" data-id="${escapeHtml(String(comment.id))}">Delete</button>` : ''}
+      </div>
+      <div class="reply-form-wrap" data-reply-for="${escapeHtml(String(comment.id))}"></div>
+      <div class="comment-replies"></div>
+    `;
+    container.appendChild(item);
+
+    const replies = byParent.get(comment.id) || [];
+    const replyContainer = item.querySelector('.comment-replies');
+    replies.forEach(reply => addComment(reply, replyContainer, depth + 1));
+  }
+
+  (byParent.get(null) || []).forEach(comment => addComment(comment, commentList));
+
+  commentList.querySelectorAll('.comment-delete').forEach(btn => {
+    btn.addEventListener('click', () => deleteComment(btn.dataset.id));
+  });
+  commentList.querySelectorAll('.comment-edit').forEach(btn => {
+    btn.addEventListener('click', () => editComment(btn.dataset.id));
+  });
+  commentList.querySelectorAll('.comment-reply-btn').forEach(btn => {
+    btn.addEventListener('click', () => showReplyBox(btn.dataset.id));
+  });
+}
+
+async function editComment(id){
+  if (!supabaseClient) return alert('You are offline.');
+  const item = commentList.querySelector(`.comment[data-id="${CSS.escape(String(id))}"]`);
+  if (!item) return;
+  const text = item.querySelector('.comment-text');
+  const oldText = text.textContent;
+  const box = document.createElement('textarea');
+  box.className = 'comment-edit-box';
+  box.maxLength = 1000;
+  box.value = oldText;
+  text.replaceWith(box);
+
+  const controls = item.querySelector('.comment-controls');
+  const oldControls = controls.innerHTML;
+  controls.innerHTML = '<button type="button" class="comment-save">Save</button><button type="button" class="comment-cancel">Cancel</button>';
+  controls.querySelector('.comment-save').addEventListener('click', async () => {
+    const body = box.value.trim();
+    if (!body) return alert('A comment cannot be empty.');
+    const { error } = await supabaseClient.from('comments').update({ comment: body, updated_at: new Date().toISOString() }).eq('id', id);
+    if (error) {
+      console.error('Supabase edit error:', error);
+      return alert('Could not edit this comment. Check the Supabase UPDATE policy.');
+    }
+    await loadComments();
+  });
+  controls.querySelector('.comment-cancel').addEventListener('click', () => loadComments());
+}
+
+function showReplyBox(parentId){
+  const wrap = commentList.querySelector(`.reply-form-wrap[data-reply-for="${CSS.escape(String(parentId))}"]`);
+  if (!wrap) return;
+  if (!currentAuthUser) {
+    document.getElementById('signInDialog')?.showModal();
+    return;
+  }
+  if (wrap.innerHTML) { wrap.innerHTML = ''; return; }
+  const form = document.createElement('form');
+  form.className = 'reply-form';
+  form.innerHTML = `<textarea maxlength="1000" placeholder="Write a reply..." required></textarea><div><button type="submit" class="btn-solid">Reply</button><button type="button" class="reply-cancel">Cancel</button></div>`;
+  wrap.appendChild(form);
+  form.querySelector('.reply-cancel').addEventListener('click', () => wrap.innerHTML = '');
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const body = form.querySelector('textarea').value.trim();
+    if (!body) return;
+    const button = form.querySelector('button[type="submit"]');
+    button.disabled = true;
+    const { error } = await supabaseClient.from('comments').insert({
+      name: getReaderName(), comment: body, user_id: currentAuthUser.id, parent_id: parentId
+    });
+    if (error) {
+      console.error('Supabase reply error:', error);
+      button.disabled = false;
+      return alert('Could not post the reply. Check the Supabase INSERT policy.');
+    }
+    window.showWaterOrb?.();
+    await loadComments();
+  });
+}
+
+async function deleteComment(id){
+  if (!supabaseClient) { alert('You are offline. Connect to the internet to manage comments.'); return; }
+  if (!confirm('Delete this comment and its replies? This cannot be undone.')) return;
+  const { error } = await supabaseClient.from('comments').delete().eq('id', id);
+  if (error) {
+    console.error('Supabase delete error:', error);
+    alert('Could not delete the comment. Check the Supabase DELETE policy.');
+    return;
+  }
+  await loadComments();
+}
+
+function updateCommentFormState(){
+  const name = currentAuthUser ? getReaderName(currentAuthUser) : '';
+  if (name) {
+    commentStatus.textContent = `Commenting as ${name}`;
+    commentSubmit.disabled = false;
+    commentInput.disabled = false;
+  } else {
+    commentStatus.textContent = 'Sign in above to comment.';
+    commentSubmit.disabled = true;
+    commentInput.disabled = true;
+  }
+}
+
+async function loadComments(){
+  if (!supabaseClient) {
+    commentList.innerHTML = '<div class="comment-empty">Comments need an internet connection.</div>';
+    commentStatus.textContent = 'Connect to the internet to load comments.';
+    return;
+  }
+  let { data, error } = await supabaseClient
+    .from('comments')
+    .select('id, name, comment, user_id, parent_id, created_at, updated_at')
+    .order('created_at', { ascending:false })
+    .limit(300);
+
+  if (error) {
+    /* Compatibility retry for transient Supabase errors. */
+    const retry = await supabaseClient
+      .from('comments')
+      .select('id, name, comment, user_id, parent_id, created_at, updated_at')
+      .order('created_at', { ascending:false })
+      .limit(300);
+    data = retry.data;
+    error = retry.error;
+  }
+
+  if (error) {
+    console.error('Supabase load error:', error);
+    commentList.innerHTML = '<div class="comment-empty">Could not load comments right now.</div>';
+    commentStatus.textContent = 'Could not connect to comments.';
+    return;
+  }
+
+  renderComments(data || []);
+  updateCommentFormState();
+}
+
+commentForm.addEventListener('submit', async (event)=>{
+  event.preventDefault();
+
+  const name = getReaderName();
+  const body = commentInput.value.trim();
+
+  if (!name) {
+    dlg?.showModal();
+    return;
+  }
+
+  if (!body) return;
+  if (!supabaseClient) { commentStatus.textContent = 'Connect to the internet to post a comment.'; return; }
+
+  commentSubmit.disabled = true;
+  commentStatus.textContent = 'Posting...';
+
+  let { error } = await supabaseClient
+    .from('comments')
+    .insert({ name:name, comment:body, user_id: currentAuthUser?.id ?? null });
+
+  if (error) {
+    /* Compatibility retry for transient Supabase errors. */
+    const retry = await supabaseClient.from('comments').insert({ name:name, comment:body, user_id: currentAuthUser?.id ?? null });
+    error = retry.error;
+  }
+
+  if (error) {
+    console.error('Supabase post error:', error);
+    commentStatus.textContent = 'Could not post the comment. Please try again.';
+    updateCommentFormState();
+    return;
+  }
+
+  commentInput.value = '';
+  commentStatus.textContent = 'Comment posted! ❤️';
+  window.showWaterOrb?.();
+  commentStatus.classList.add('posted');
+  setTimeout(() => commentStatus.classList.remove('posted'), 1500);
+  await loadComments();
+});
+
+renderUser();
+commentStatus.textContent = 'Loading comments…';
+commentSubmit.disabled = true;
+commentInput.disabled = true;
+
+/* Load now, then check for new comments every 8 seconds. */
+loadComments();
+setInterval(loadComments, 8000);
+
+
+
+const signInDialog = document.getElementById('signInDialog');
+const signInForm = document.getElementById('signInForm');
+const switchToLogin = document.getElementById('switchToLogin');
+const forgotPasswordWrap = document.getElementById('forgotPasswordWrap');
+const forgotPassword = document.getElementById('forgotPassword');
+const resetPasswordDialog = document.getElementById('resetPasswordDialog');
+const resetPasswordForm = document.getElementById('resetPasswordForm');
+const resetPasswordHint = document.getElementById('resetPasswordHint');
+const newPasswordDialog = document.getElementById('newPasswordDialog');
+const newPasswordForm = document.getElementById('newPasswordForm');
+const newPasswordHint = document.getElementById('newPasswordHint');
+let signInMode = 'signup';
+
+function updateAuthDialog(){
+  const title = signInDialog?.querySelector('h3');
+  const button = document.getElementById('confirmSignIn');
+  const name = document.getElementById('nameInput');
+  const email = document.getElementById('emailInput');
+  const pass = document.getElementById('passInput');
+  const confirmWrap = document.getElementById('confirmPasswordWrap');
+  const confirmPass = document.getElementById('confirmPassInput');
+  if (!title || !button) return;
+
+  if (signInMode === 'login') {
+    title.textContent = 'Enter the Archive';
+    button.textContent = 'Sign in';
+    switchToLogin.textContent = 'Create an account';
+    name.required = false;
+    name.style.display = '';
+    name.placeholder = 'Your reader name (not needed for owner sign-in)';
+    pass.autocomplete = 'current-password';
+    if (confirmWrap) confirmWrap.style.display = 'none';
+    if (confirmPass) confirmPass.required = false;
+    forgotPasswordWrap.style.display = '';
+    setSignInHint('Use your Supabase email and password. The Helix Crown owner account is recognized by its protected owner role.');
+  } else {
+    title.textContent = 'Sign the Archive';
+    button.textContent = 'Create account';
+    switchToLogin.textContent = 'Sign in';
+    name.required = true;
+    name.style.display = '';
+    name.placeholder = 'Your name';
+    pass.autocomplete = 'new-password';
+    if (confirmWrap) confirmWrap.style.display = '';
+    if (confirmPass) confirmPass.required = true;
+    forgotPasswordWrap.style.display = 'none';
+    setSignInHint('');
+  }
+}
+
+switchToLogin?.addEventListener('click', () => {
+  signInMode = signInMode === 'login' ? 'signup' : 'login';
+  updateAuthDialog();
+});
+
+forgotPassword?.addEventListener('click', () => {
+  const email = document.getElementById('emailInput')?.value.trim() || '';
+  signInDialog?.close();
+  resetPasswordDialog?.showModal();
+  const resetEmail = document.getElementById('resetEmailInput');
+  if (resetEmail) resetEmail.value = email;
+  if (resetPasswordHint) resetPasswordHint.textContent = '';
+});
+
+document.getElementById('cancelResetPassword')?.addEventListener('click', () => {
+  resetPasswordDialog?.close();
+});
+
+resetPasswordForm?.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const email = document.getElementById('resetEmailInput')?.value.trim();
+  const button = document.getElementById('sendResetButton');
+  if (!email || !supabaseClient) {
+    if (resetPasswordHint) resetPasswordHint.textContent = !supabaseClient
+      ? 'Connect to the internet to reset your password.'
+      : 'Please enter your account email.';
+    return;
+  }
+
+  button.disabled = true;
+  resetPasswordHint.textContent = 'Sending...';
+  try {
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.href.split('#')[0]
+    });
+    if (error) throw error;
+    resetPasswordHint.textContent = 'Hey, friendly reminder: check your email for your secure password-reset link. Your current password is never sent back or shown.';
+  } catch (error) {
+    resetPasswordHint.textContent = error.message || 'Could not send the reset email.';
+  } finally {
+    button.disabled = false;
+  }
+});
+
+newPasswordForm?.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const password = document.getElementById('newPasswordInput')?.value || '';
+  const confirm = document.getElementById('newPasswordConfirmInput')?.value || '';
+  const button = document.getElementById('saveNewPasswordButton');
+  if (password.length < 6) { newPasswordHint.textContent = 'Password must be at least 6 characters.'; return; }
+  if (password !== confirm) { newPasswordHint.textContent = 'The passwords do not match.'; return; }
+  button.disabled = true;
+  newPasswordHint.textContent = 'Saving...';
+  try {
+    const { error } = await supabaseClient.auth.updateUser({ password });
+    if (error) throw error;
+    newPasswordHint.textContent = 'Password changed successfully. You can now sign in with the new password.';
+    setTimeout(() => { newPasswordDialog?.close(); signInMode = 'login'; updateAuthDialog(); signInDialog?.showModal(); }, 700);
+  } catch (error) {
+    newPasswordHint.textContent = error.message || 'Could not change the password.';
+  } finally {
+    button.disabled = false;
+  }
+});
+
+if (supabaseClient) {
+  supabaseClient.auth.onAuthStateChange((event) => {
+    if (event === 'PASSWORD_RECOVERY') {
+      setTimeout(() => {
+        newPasswordHint.textContent = '';
+        newPasswordForm?.reset();
+        newPasswordDialog?.showModal();
+      }, 100);
+    }
+  });
+}
+
+signInForm?.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const email = document.getElementById('emailInput').value.trim().toLowerCase();
+  const password = document.getElementById('passInput').value;
+  const confirmPassword = document.getElementById('confirmPassInput')?.value || '';
+  const readerName = document.getElementById('nameInput').value.trim();
+  const button = document.getElementById('confirmSignIn');
+
+  button.disabled = true;
+  setSignInHint('Please wait...');
+
+  if (!supabaseClient) {
+    setSignInHint('You are offline. Connect to the internet to create or sign in to an account.', true);
+    button.disabled = false;
+    return;
+  }
+
+  try {
+    if (!email) throw new Error('Please enter your email address.');
+    if (password.length < 6) throw new Error('Password must be at least 6 characters.');
+
+    if (signInMode === 'signup') {
+      if (readerName.length < 2) throw new Error('Please enter a reader name with at least 2 characters.');
+      if (readerName.length > 24) throw new Error('Reader name must be 24 characters or fewer.');
+      if (password !== confirmPassword) throw new Error('The passwords do not match.');
+      if (readerName.toLowerCase() === OWNER_NAME.toLowerCase()) {
+        throw new Error('Helix Crown is reserved for the site owner. Please choose another reader name.');
+      }
+      const { data, error } = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: 'https://melodious-moonbeam-3fd109.netlify.app/',
+          data: { reader_name: readerName }
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.session) {
+        setSignInHint('Account created. You are signed in.');
+        await refreshAuthUI();
+        setTimeout(() => { signInDialog.close(); showWelcomeOverlay(getReaderName(), true); }, 500);
+      } else {
+        setSignInHint('Account created. Check your email to confirm it, then sign in.');
+      }
+    } else {
+      const { error } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) throw error;
+
+      if (getIsOwner()) {
+        setSignInHint('Owner signed in. Chapters VII–IX are now unlocked.');
+      } else {
+        setSignInHint('Signed in.');
+      }
+      await refreshAuthUI();
+      applyOwnerChapterAccess();
+      setTimeout(() => { signInDialog.close(); showWelcomeOverlay(getReaderName(), false); }, 500);
+    }
+  } catch (error) {
+    setSignInHint(error.message || 'Something went wrong.', true);
+  } finally {
+    button.disabled = false;
+  }
+});
+
+updateAuthDialog();
+document.getElementById('cancelSignIn')?.addEventListener('click', () => signInDialog.close());
+</script>
+<script>
+/* Reader enhancements — purely additive. Nothing here replaces or overrides the
+   story, sign-in, owner-gating, theme, font-size or comment code above; chapter
+   changes are delegated to the existing table-of-contents click handlers, so
+   owner-only chapters stay gated exactly as before. */
+(function(){
+  'use strict';
+  try{
+    const reader=document.getElementById('reader');
+    const links=Array.from(document.querySelectorAll('#tocList a[data-ch]'));
+    if(!reader||!links.length) return;
+
+    /* chapter navigation (previous / next) */
+    const nav=document.createElement('nav');
+    nav.className='chapter-nav';
+    nav.setAttribute('aria-label','Chapter navigation');
+    nav.innerHTML=
+      '<button type="button" class="cn-prev"><span class="cn-dir"></span><span class="cn-title"></span></button>'+
+      '<div class="cn-meta" aria-live="polite"><b></b><span></span></div>'+
+      '<button type="button" class="cn-next"><span class="cn-dir"></span><span class="cn-title"></span></button>';
+    reader.appendChild(nav);
+    const prevBtn=nav.querySelector('.cn-prev'), nextBtn=nav.querySelector('.cn-next');
+    const metaPart=nav.querySelector('.cn-meta b'), metaTime=nav.querySelector('.cn-meta span');
+
+    const currentIndex=()=>links.findIndex(a=>a.classList.contains('active'));
+    function setBtn(btn,link,dir,fallback){
+      const d=btn.querySelector('.cn-dir'), t=btn.querySelector('.cn-title');
+      d.textContent=dir;
+      if(link){
+        t.textContent=link.textContent.trim()+(link.classList.contains('owner-locked-link')?' 🔒':'');
+        btn.disabled=false;
+      }else{
+        t.textContent=fallback;
+        btn.disabled=true;
+      }
+    }
+    function update(){
+      const i=currentIndex();
+      if(i<0) return;
+      setBtn(prevBtn,links[i-1],'Previous','You are at the beginning');
+      setBtn(nextBtn,links[i+1],'Next','More chapters to come');
+      metaPart.textContent='Part '+(i+1)+' of '+links.length;
+      const sec=reader.querySelector('.chapter.active');
+      const locked=!sec||sec.querySelector('.owner-gate');
+      const words=locked?0:(sec.textContent||'').trim().split(/\s+/).filter(Boolean).length;
+      metaTime.textContent=words?Math.max(1,Math.round(words/230))+' min read':'';
+      links.forEach(a=>{ if(a.classList.contains('active')) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
+      onScroll();
+    }
+    function go(step){
+      const target=links[currentIndex()+step];
+      if(target) target.click();   /* reuse the existing handler (owner gating, private-chapter loading, scrolling) */
+    }
+    prevBtn.addEventListener('click',()=>go(-1));
+    nextBtn.addEventListener('click',()=>go(1));
+
+    /* re-run whenever a chapter is shown, hidden or filled in (private chapters load late) */
+    const watch=new MutationObserver(update);
+    reader.querySelectorAll('.chapter').forEach(sec=>watch.observe(sec,{attributes:true,attributeFilter:['class'],childList:true}));
+    new MutationObserver(update).observe(document.body,{attributes:true,attributeFilter:['class']});
+
+    /* keyboard: ← / → turn the page (never while typing or while a dialog is open) */
+    document.addEventListener('keydown',e=>{
+      if(e.defaultPrevented||e.altKey||e.ctrlKey||e.metaKey||e.shiftKey) return;
+      if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight') return;
+      const t=e.target;
+      if(t&&(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+      if(document.querySelector('dialog[open]')) return;
+      go(e.key==='ArrowRight'?1:-1);
+    });
+
+    /* reading progress + back-to-top */
+    const bar=document.getElementById('readProgress');
+    const toTop=document.getElementById('toTop');
+    let ticking=false;
+    function onScroll(){
+      if(ticking) return;
+      ticking=true;
+      requestAnimationFrame(()=>{
+        ticking=false;
+        const r=reader.getBoundingClientRect();
+        const span=Math.max(r.height-window.innerHeight*0.6,1);
+        const p=Math.min(Math.max(-r.top+80,0)/span,1);
+        if(bar) bar.style.transform='scaleX('+p.toFixed(4)+')';
+        if(toTop) toTop.classList.toggle('show',window.scrollY>700);
+      });
+    }
+    window.addEventListener('scroll',onScroll,{passive:true});
+    window.addEventListener('resize',onScroll);
+    toTop?.addEventListener('click',()=>{
+      const calm=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({top:0,behavior:calm?'auto':'smooth'});
+    });
+
+    update();
+  }catch(err){
+    console.error('Reader enhancements failed to start:',err);
+  }
+})();
+</script>
+<script>
+/* Story extras — additive only. Narrator colours, drifting motes, moon-phase
+   progress button, and "continue reading" memory. Chapter switching is still done
+   by the original table-of-contents handlers. */
+(function(){
+  'use strict';
+  try{
+    const reduce=matchMedia('(prefers-reduced-motion: reduce)');
+    const reader=document.getElementById('reader');
+    const links=Array.from(document.querySelectorAll('#tocList a[data-ch]'));
+
+    /* 1. narrator colour per chapter */
+    document.querySelectorAll('#reader .chapter').forEach(sec=>{
+      const v=(sec.querySelector('.voice')?.textContent||'').toLowerCase();
+      const who=v.includes('kael')?'kael':v.includes('wren')?'wren':'';
+      if(who) sec.setAttribute('data-voice',who);
+    });
+
+    /* 2. moon-phase progress button */
+    const btn=document.getElementById('toTop');
+    const R=15;
+    function moonPath(p){               /* p 0..1: new moon -> full moon (waxing, lit on the right) */
+      const k=R*(1-2*p), sweep=k>=0?0:1, rx=Math.abs(k);
+      return 'M17 2A'+R+' '+R+' 0 0 1 17 32A'+rx.toFixed(2)+' '+R+' 0 0 '+sweep+' 17 2Z';
+    }
+    if(btn){
+      btn.innerHTML='<svg viewBox="0 0 34 34" aria-hidden="true"><circle class="m-dark" cx="17" cy="17" r="'+R+'"/><path class="m-lit" d="'+moonPath(0.02)+'"/><circle class="m-rim" cx="17" cy="17" r="'+R+'"/></svg>';
+      btn.setAttribute('aria-label','Back to top — reading progress shown as a moon');
+      btn.title='Back to top';
+    }
+    const lit=btn&&btn.querySelector('.m-lit');
+    let tick=false;
+    function phase(){
+      if(tick||!lit) return; tick=true;
+      requestAnimationFrame(()=>{
+        tick=false;
+        const r=reader.getBoundingClientRect();
+        const span=Math.max(r.height-innerHeight*0.6,1);
+        const p=Math.min(Math.max((-r.top+80)/span,0.02),1);
+        lit.setAttribute('d',moonPath(p));
+      });
+    }
+    addEventListener('scroll',phase,{passive:true}); addEventListener('resize',phase);
+    new MutationObserver(phase).observe(reader,{attributes:true,subtree:true,attributeFilter:['class']});
+    phase();
+
+    /* 3. drifting motes (moon-dust in dark mode, warm ash in light mode) */
+    const cv=document.createElement('canvas'); cv.id='motes'; cv.setAttribute('aria-hidden','true');
+    document.body.insertBefore(cv,document.body.firstChild);
+    const ctx=cv.getContext('2d');
+    let W=0,H=0,dpr=1,motes=[],raf=0,color='196,161,240',dark=true,frame=0;
+    function size(){
+      dpr=Math.min(devicePixelRatio||1,2); W=innerWidth; H=innerHeight;
+      cv.width=W*dpr; cv.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+      const n=W<640?20:44; motes=[];
+      for(let i=0;i<n;i++) motes.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.5+.4,s:Math.random()*.25+.06,d:Math.random()*6.28,a:Math.random()*.5+.2});
+    }
+    function readColor(){
+      const root=document.documentElement, t=root.getAttribute('data-theme');
+      dark=t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+      color=dark?'196,161,240':'122,84,40';
+    }
+    function draw(){
+      raf=requestAnimationFrame(draw);
+      if(++frame%90===0) readColor();
+      ctx.clearRect(0,0,W,H);
+      for(const m of motes){
+        m.d+=.004; m.x+=Math.sin(m.d)*.25; m.y+=dark?-m.s:m.s*.8;
+        if(m.y<-6) m.y=H+6; if(m.y>H+6) m.y=-6;
+        if(m.x<-6) m.x=W+6; if(m.x>W+6) m.x=-6;
+        ctx.beginPath(); ctx.arc(m.x,m.y,m.r,0,6.283);
+        ctx.fillStyle='rgba('+color+','+(m.a*(dark?.55:.4)).toFixed(3)+')'; ctx.fill();
+      }
+    }
+    function run(){ cancelAnimationFrame(raf); if(!reduce.matches&&!document.hidden) draw(); else ctx.clearRect(0,0,W,H); }
+    readColor(); size(); run();
+    addEventListener('resize',()=>{size();run();});
+    document.addEventListener('visibilitychange',run);
+    reduce.addEventListener?.('change',run);
+
+    /* 4. continue reading */
+    const KEY='vb_last_chapter';
+    const toast=document.createElement('div');
+    toast.className='resume-toast'; toast.setAttribute('role','status');
+    document.body.appendChild(toast);
+    function hide(){ toast.classList.remove('show'); }
+    function activeKey(){ return links.find(a=>a.classList.contains('active'))?.getAttribute('data-ch'); }
+    let saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
+    const first=links[0]?.getAttribute('data-ch');
+    const target=links.find(a=>a.getAttribute('data-ch')===saved);
+    if(target&&saved!==first){
+      toast.innerHTML='<span>Welcome back. Continue with <b></b>?</span><button type="button" class="btn-solid">Continue</button><button type="button">Start over</button>';
+      toast.querySelector('b').textContent=target.textContent.trim();
+      const [go,no]=toast.querySelectorAll('button');
+      go.addEventListener('click',()=>{ hide(); target.click(); });
+      no.addEventListener('click',hide);
+      setTimeout(()=>toast.classList.add('show'),900);
+      setTimeout(hide,14000);
+    }
+    new MutationObserver(()=>{ const k=activeKey(); if(k){ try{ localStorage.setItem(KEY,k); }catch(e){} } })
+      .observe(document.getElementById('tocList'),{attributes:true,subtree:true,attributeFilter:['class']});
+    links.forEach(a=>a.addEventListener('click',hide));
+  }catch(err){ console.error('Story extras failed to start:',err); }
+})();
+</script>
+<script>
+/* ---- Elf welcome: drifting sparkles across the whole screen ---- */
+(function buildWelcomeSparkles(){
+  const host = document.getElementById('welcomeSparkles');
+  if (!host) return;
+  const colors = ['#ffffff','#bfeaff','#ffe9a8','#e6d4ff','#9be0ff'];
+  for (let i = 0; i < 52; i++) {
+    const s = document.createElement('span');
+    const dot = i % 3 === 0;
+    s.className = 'sparkle' + (dot ? ' dot' : '');
+    const size = dot ? 4 + Math.random() * 7 : 8 + Math.random() * 18;
+    s.style.cssText =
+      'left:' + (Math.random() * 100).toFixed(1) + '%;' +
+      'top:' + (30 + Math.random() * 75).toFixed(1) + '%;' +
+      '--s:' + size.toFixed(1) + 'px;' +
+      '--c:' + colors[i % colors.length] + ';' +
+      '--dx:' + (Math.random() * 140 - 70).toFixed(0) + 'px;' +
+      '--dur:' + (7 + Math.random() * 8).toFixed(1) + 's;' +
+      '--delay:-' + (Math.random() * 14).toFixed(1) + 's;' +
+      '--tw:' + (1.4 + Math.random() * 2.2).toFixed(1) + 's;';
+    host.appendChild(s);
+  }
+})();
+
+/* ---- Water orb: appears mid-screen when a comment is posted, bursts after 4s ---- */
+window.showWaterOrb = function showWaterOrb(){
+  document.querySelectorAll('.water-orb-wrap').forEach(n => n.remove());
+  const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'water-orb-wrap';
+  wrap.setAttribute('aria-hidden', 'true');
+  wrap.innerHTML =
+    '<div class="water-orb">' +
+      '<span class="orb-halo"></span>' +
+      '<div class="orb-body">' +
+        '<span class="orb-swirl"></span>' +
+        '<span class="orb-bubble" style="left:20%;width:11px;height:11px;--bx:8px;animation-delay:0s"></span>' +
+        '<span class="orb-bubble" style="left:46%;width:16px;height:16px;--bx:-10px;animation-delay:.8s"></span>' +
+        '<span class="orb-bubble" style="left:68%;width:9px;height:9px;--bx:6px;animation-delay:1.5s"></span>' +
+        '<span class="orb-bubble" style="left:34%;width:7px;height:7px;--bx:-5px;animation-delay:2s"></span>' +
+        '<span class="orb-shine"></span>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(wrap);
+  const orb = wrap.querySelector('.water-orb');
+
+  if (reduce) { setTimeout(() => wrap.remove(), 1800); return; }
+
+  setTimeout(() => orb.classList.add('swelling'), 3500);
+  setTimeout(() => {
+    orb.classList.remove('swelling');
+    orb.classList.add('bursting');
+
+    const flash = document.createElement('span');
+    flash.className = 'orb-flash';
+    wrap.appendChild(flash);
+
+    [0, 0.12].forEach((delay, i) => {
+      const ring = document.createElement('span');
+      ring.className = 'orb-ring';
+      ring.style.cssText = '--r:' + (i ? 120 : 170) + 'px;--rd:' + delay + 's;';
+      wrap.appendChild(ring);
+    });
+
+    const N = 28;
+    for (let i = 0; i < N; i++) {
+      const d = document.createElement('span');
+      d.className = 'orb-drop';
+      const angle = (i / N) * Math.PI * 2 + (Math.random() - 0.5) * 0.4;
+      const dist = 90 + Math.random() * Math.min(window.innerWidth, window.innerHeight) * 0.38;
+      d.style.cssText =
+        '--s:' + (6 + Math.random() * 16).toFixed(1) + 'px;' +
+        '--tx:' + (Math.cos(angle) * dist).toFixed(0) + 'px;' +
+        '--ty:' + (Math.sin(angle) * dist - 30).toFixed(0) + 'px;' +
+        '--dur:' + (0.8 + Math.random() * 0.5).toFixed(2) + 's;' +
+        '--dl:' + (Math.random() * 0.06).toFixed(2) + 's;';
+      wrap.appendChild(d);
+    }
+  }, 4000);
+  setTimeout(() => wrap.remove(), 5400);
+};
+
+</script>
+</body>
+</html>
